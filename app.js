@@ -4,18 +4,14 @@ import path from 'path';
 import fileUpload from "express-fileupload";
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import  from '';
-
-// import  router  from "./router/index.js";
-// import  users  from "./router/APIs.js";
-
-
+import router from "./router/index.js";
+import users from "./router/APIs.js";
+import server from "./cofing/server.config.js"
 dotenv.config();
-
-const app = express();
 
 (async () => {
     try {
+        const app = express();
         app.set('views', path.join(path.resolve(), 'views'));
         app.use(express.json());
         app.use(cors());
@@ -23,9 +19,14 @@ const app = express();
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(express.static(path.join(path.resolve(), 'public')));
         app.use(fileUpload());
-        // app.use('/', routes);
-        // app.use('/users', users);
+        await server();
+        app.use('/', router);
+        app.use('/users', users);
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
     } catch (error) {
-        console.log("Error:", error);
+        console.log("error-:", error);
     }
-})();
+
+})
