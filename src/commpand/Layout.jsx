@@ -9,13 +9,19 @@ function Layout() {
             <div className='min-h-full'>
                 <Sidebar />
             </div>
-            <div className='w-full h-full flex flex-col px-4 py-2'>
-                <Navbars />
-                <div className='w-full h-full p-4 overflow-auto'>
-                    <Outlet />
+            <div className='flex-col w-full'>
+                <div className='w-full flex-col px-4 py-2'>
+                    <Navbars />
+                    <div className='w-full h-full p-4 overflow-auto'>
+                        <Outlet />
+                    </div>
                 </div>
-                <Footer />
+                <div className='w-full flex justify-end'>
+                    <Footer />
+                </div>
+
             </div>
+
         </div>
     )
 }
