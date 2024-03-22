@@ -11,7 +11,7 @@ function Layout() {
             </div>
             <div className='flex-col w-full'>
                 <div className='w-full flex-col px-4 py-2'>
-                    <Navbars />
+                    <Navbars/>
                     <div className='w-full h-full p-4 overflow-auto'>
                         <Outlet />
                     </div>

@@ -187,9 +187,6 @@ function NavListMenu() {
 
 // nav list component
 
-
-
-
 export function Navbars() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -203,8 +200,8 @@ export function Navbars() {
   }, []);
 
   return (
-    <Navbar className="mx-auto max-w-screen-xl p-2 lg:rounded-full lg:pl-6">
-      <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
+    <Navbar className="w-full   lg:rounded-full lg:pl-6 ">
+      <div className="relative  flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
           href="#"
