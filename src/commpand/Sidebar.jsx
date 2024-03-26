@@ -38,10 +38,10 @@ export function Sidebar() {
     ${sidebar === 0
         ? `w-full`
         : `w-20`} 
-      max-w-[20rem] p-4 shadow-xl transition ease-in-out delay-150`}
+      max-w-[20rem] p-4 shadow-xl transition-all duration-300`}
     >
       <div className={`flex ${sidebar ===0 ? "justify-end " : "justify-center mb-3" } relative top-1 `}>
-        <span class="material-symbols-outlined transition duration-700"
+        <span class="material-symbols-outlined"
           onClick={sidebaropen}
         >
           menu
@@ -62,11 +62,11 @@ export function Sidebar() {
           open={open == 1}
           className={`${sidebar === 0
             ? `w-full`
-            : `w-10`}`
+            : `w-10`} justify-center`
           }
           icon={sidebar === 0
             ? <ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4 transition-transform`} />
-            : ""}
+            : ""} 
         >
           <ListItem className="p-0" selected={open === 1}>
             <AccordionHeader
@@ -74,7 +74,7 @@ export function Sidebar() {
               className="border-b-0 p-3"
             >
               <ListItemPrefix>
-                <PresentationChartBarIcon className="h-5 w-5" />
+                <PresentationChartBarIcon className="h-5" />
               </ListItemPrefix>
 
               <Typography color="blue-gray" className="mr-auto font-normal">
@@ -115,11 +115,11 @@ export function Sidebar() {
 
 
 
-        <Accordion className={`${sidebar === 0 ? `w-full` : `w-10`}`}>
+        <Accordion className={`${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
           <ListItem >
 
             <ListItemPrefix>
-              <InboxIcon className="h-5 w-5" />
+              <InboxIcon className="h-5" />
             </ListItemPrefix>
             {`${sidebar === 0 ? "Inbox" : ""}`}
             <ListItemSuffix>
@@ -129,21 +129,21 @@ export function Sidebar() {
 
           <ListItem className={`${sidebar === 0 ? "Inbox" : ""}`}>
             <ListItemPrefix>
-              <UserCircleIcon className="h-5 w-5" />
+              <UserCircleIcon className="h-5" />
             </ListItemPrefix>
             {`${sidebar === 0 ? "Profile" : ""}`}
           </ListItem>
 
           <ListItem>
             <ListItemPrefix>
-              <Cog6ToothIcon className="h-5 w-5" />
+              <Cog6ToothIcon className="h-5" />
             </ListItemPrefix>
             {`${sidebar === 0 ? "Satting" : ""}`}
           </ListItem>
 
           <ListItem>
             <ListItemPrefix>
-              <PowerIcon className="h-5 w-5" />
+              <PowerIcon className="h-5" />
             </ListItemPrefix>
             {`${sidebar === 0 ? "Log Out" : ""}`}
           </ListItem>
