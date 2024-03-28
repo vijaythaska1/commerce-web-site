@@ -6,7 +6,6 @@ import {
   ListItem,
   ListItemPrefix,
   ListItemSuffix,
-  Chip,
   Accordion,
   AccordionHeader,
   AccordionBody,
@@ -38,9 +37,9 @@ export function Sidebar() {
     ${sidebar === 0
         ? `w-full`
         : `w-20`} 
-      max-w-[20rem] p-4 shadow-xl transition-all duration-300`}
+      max-w-[20rem] p-4 shadow-xl transition-all duration-300` }
     >
-      <div className={`flex ${sidebar ===0 ? "justify-end " : "justify-center mb-3" } relative top-1 `}>
+      <div className={`flex ${sidebar === 0 ? "justify-end " : "justify-center mb-3"} relative top-1 `}>
         <span class="material-symbols-outlined"
           onClick={sidebaropen}
         >
@@ -59,14 +58,14 @@ export function Sidebar() {
 
       <List>
         <Accordion
-          open={open == 1}
+          open={open === 1}
           className={`${sidebar === 0
             ? `w-full`
             : `w-10`} justify-center`
           }
           icon={sidebar === 0
-            ? <ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4 transition-transform`} />
-            : ""} 
+            ? <ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4`} />
+            : ""}
         >
           <ListItem className="p-0" selected={open === 1}>
             <AccordionHeader
@@ -85,7 +84,7 @@ export function Sidebar() {
           </ListItem>
 
 
-          <AccordionBody className="py-1">
+          <AccordionBody className={`py-1 ${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
             <List className="p-0">
 
               <ListItem>
@@ -112,8 +111,6 @@ export function Sidebar() {
             </List>
           </AccordionBody>
         </Accordion>
-
-
 
         <Accordion className={`${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
           <ListItem >

@@ -62,7 +62,7 @@ function Loginpage() {
                     </div>
                 </CardBody>
                 <CardFooter className="pt-0">
-                    <Button onClick={() => navegate("/Layout")} variant="gradient" fullWidth>
+                    <Button onClick={() => navegate("/profile")} variant="gradient" fullWidth>
                         Sign In
                     </Button>
                     <Typography variant="small" className="mt-6 flex justify-center">

@@ -83,8 +83,8 @@ function ProfileMenu() {
               key={label}
               onClick={closeMenu}
               className={`flex items-center gap-2 rounded ${isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
+                ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+                : ""
                 }`}
             >
               {React.createElement(icon, {
@@ -208,7 +208,7 @@ export function Navbars() {
           Material Tailwind
         </Typography>
         <div className="hidden lg:block">
-          
+
         </div>
         <IconButton
           size="sm"
@@ -222,7 +222,7 @@ export function Navbars() {
         <ProfileMenu />
       </div>
       <MobileNav open={isNavOpen} className="overflow-scroll">
-     
+
       </MobileNav>
     </Navbar>
   );
