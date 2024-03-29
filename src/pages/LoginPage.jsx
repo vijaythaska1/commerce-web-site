@@ -69,7 +69,7 @@ function Loginpage() {
                         Don&apos;t have an account?
                         <Link
                             as="a"
-                            to={"/Signup"}
+                            to={"/Dashboard"}
                             variant="small"
                             color="blue-gray"
                             className="ml-1 font-bold"

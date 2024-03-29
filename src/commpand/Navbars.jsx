@@ -23,28 +23,32 @@ import {
   RocketLaunchIcon,
   Bars2Icon,
 } from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
 
 // profile menu component
 const profileMenuItems = [
   {
     label: "My Profile",
     icon: UserCircleIcon,
+    to:"/profile"
   },
   {
-    label: "Edit Profile",
+    label: "Change Password",
     icon: Cog6ToothIcon,
+    to:"/ChangePassword"
   },
-  {
-    label: "Inbox",
-    icon: InboxArrowDownIcon,
-  },
-  {
-    label: "Help",
-    icon: LifebuoyIcon,
-  },
+  // {
+  //   label: "Inbox",
+  //   icon: InboxArrowDownIcon,
+  // },
+  // {
+  //   label: "Help",
+  //   icon: LifebuoyIcon,
+  // },
   {
     label: "Sign Out",
     icon: PowerIcon,
+    to:"/"
   },
 ];
 
@@ -59,7 +63,7 @@ function ProfileMenu() {
         <Button
           variant="text"
           color="blue-gray"
-          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
+          className="flex items-center gap-1 rounded-full py-0.5 pr-2  lg:ml-auto"
         >
           <Avatar
             variant="circular"
@@ -76,9 +80,10 @@ function ProfileMenu() {
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
+        {profileMenuItems.map(({ label, icon, to }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
+            <Link to={to}>
             <MenuItem
               key={label}
               onClick={closeMenu}
@@ -100,6 +105,7 @@ function ProfileMenu() {
                 {label}
               </Typography>
             </MenuItem>
+            </Link>
           );
         })}
       </MenuList>
@@ -198,7 +204,7 @@ export function Navbars() {
   }, []);
 
   return (
-    <Navbar className="w-full   lg:rounded-full lg:pl-6 ">
+    <Navbar className="ml-3 mr-9  lg:rounded-full lg:pl-6 ">
       <div className="relative  flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"

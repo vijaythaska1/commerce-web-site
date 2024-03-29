@@ -5,22 +5,18 @@ import { Outlet } from "react-router-dom";
 
 function Layout() {
     return (
-        <div className='w-full h-screen flex overflow-auto bg-gray-100'>
-        
-            <div className='min-h-full '>
+        <div className='w-full h-screen flex bg-gray-100 pr-5'>
+            <div className='min-h-full'>
                 <Sidebar />
             </div>
-            <div className='flex-col w-full'>
-                <div className='w-full flex-col px-4 py-2 '>
-                    <Navbars/>
-                    <div className='w-full h-full p-4 overflow-auto'>
-                        <Outlet />
+            <div className='flex flex-col w-full'>
+                <Navbars />
+                <div className='w-full h-full p-4 overflow-auto'>
+                    <Outlet />
+                    <div className='w-full flex justify-end'>
+                        <Footer />
                     </div>
                 </div>
-                <div className='w-full flex justify-end'>
-                    <Footer />
-                </div>
-
             </div>
 
         </div>
