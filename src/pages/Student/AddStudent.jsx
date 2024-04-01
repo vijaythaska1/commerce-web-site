@@ -43,7 +43,6 @@ function AddStudent() {
             </div>
 
             <div className="grid grid-cols-2 gap-10 ml-9 mr-9 mt-10">
-
                 <Input variant="outlined" label="NAME" placeholder="Enter Name" />
                 <Input variant="outlined" label="Standard" placeholder="Standard" />
                 <Input variant="outlined" label="Standard" placeholder="Standard" />
@@ -102,10 +101,6 @@ function AddStudent() {
                     />
                 </div>
                 <Input variant="outlined" label="Standard" placeholder="Standard" />
-
-
-
-
             </div>
             <div className="flex items-center justify-center  mt-10 mr-10 ml-10">
                 <label

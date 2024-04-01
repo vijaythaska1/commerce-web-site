@@ -6,14 +6,12 @@ import {
     Button,
     Tooltip,
     CardFooter,
-    Input,
-    label
 } from "@material-tailwind/react";
 
 function Profile() {
     return (
         <>
-            <Card>
+            <Card className="overflow-hidden">
                 <Card className="w-full flex-row h-60 p-3 shadow-none">
                     <CardHeader
                         shadow={false}

@@ -5,7 +5,6 @@ import {
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
   Accordion,
   AccordionHeader,
   AccordionBody,
@@ -13,7 +12,6 @@ import {
 } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
-  ShoppingBagIcon,
   UserCircleIcon,
   Cog6ToothIcon,
   InboxIcon,
@@ -34,132 +32,128 @@ export function Sidebar() {
   };
 
   return (
-    <Card className={`h-full 
+    <>
+      <Card className={`h-full 
     ${sidebar === 0
-        ? `w-full`
-        : `w-20`} 
+          ? `w-full`
+          : `w-20`} 
       max-w-[20rem] p-4 shadow-xl transition-all duration-300 ease-in-out`}
-    >
-      <div className={`flex ${sidebar === 0 ? "justify-end " : "justify-center mb-3"} relative top-1  `}>
-        <span class="material-symbols-outlined"
-          onClick={sidebaropen}
-        >
-          menu
-        </span>
-      </div>
-      <div className="mb-2 flex justify-center">
-        <Typography variant="h5" color="blue-gray ">
-          <img
-            className="object-cover object-center"
-            src={logo}
-            alt="nature image"
-          />
-        </Typography>
-      </div>
+      >
+        <div className={`flex ${sidebar === 0 ? "justify-end " : "justify-center mb-3"} relative top-1  `}>
+          <span class="material-symbols-outlined"
+            onClick={sidebaropen}
+          >
+            menu
+          </span>
+        </div>
+        <div className="mb-2 flex justify-center">
+          <Typography variant="h5" color="blue-gray ">
+            <img
+              className="object-cover object-center"
+              src={logo}
+              alt="nature image"
+            />
+          </Typography>
+        </div>
 
-      <List className="overflow-auto">
+        <List className="overflow-auto">
 
+          <Accordion className={`${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
+            <Link to={"/Dashboard"}>
+              <ListItem >
+                <ListItemPrefix>
+                  <InboxIcon className="h-5" />
+                </ListItemPrefix>
+                {`${sidebar === 0 ? "Dashboard" : ""}`}
 
-        <Accordion className={`${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
-          <Link to={"/Dashboard"}>
-            <ListItem >
+              </ListItem>
+            </Link>
+
+            <Link to={"/Studentlisting"}>
+              <ListItem className={`${sidebar === 0 ? "Inbox" : ""}`}>
+                <ListItemPrefix>
+                  <UserCircleIcon className="h-5" />
+                </ListItemPrefix>
+                {`${sidebar === 0 ? "Student" : ""}`}
+              </ListItem>
+            </Link>
+            <ListItem>
               <ListItemPrefix>
-                <InboxIcon className="h-5" />
+                <Cog6ToothIcon className="h-5" />
               </ListItemPrefix>
-              {`${sidebar === 0 ? "Dashboard" : ""}`}
-
+              {`${sidebar === 0 ? "Satting" : ""}`}
             </ListItem>
-          </Link>
 
-          <Link to={"/Studentlisting"}>
-            <ListItem className={`${sidebar === 0 ? "Inbox" : ""}`}>
+            <ListItem>
               <ListItemPrefix>
-                <UserCircleIcon className="h-5" />
+                <PowerIcon className="h-5" />
               </ListItemPrefix>
-              {`${sidebar === 0 ? "Student" : ""}`}
+              {`${sidebar === 0 ? "Log Out" : ""}`}
             </ListItem>
-          </Link>
-          <ListItem>
-            <ListItemPrefix>
-              <Cog6ToothIcon className="h-5" />
-            </ListItemPrefix>
-            {`${sidebar === 0 ? "Satting" : ""}`}
-          </ListItem>
-
-          <ListItem>
-            <ListItemPrefix>
-              <PowerIcon className="h-5" />
-            </ListItemPrefix>
-            {`${sidebar === 0 ? "Log Out" : ""}`}
-          </ListItem>
+          </Accordion>
 
 
+          <Accordion
+            open={open === 1}
+            className={`${sidebar === 0
+              ? `w-full`
+              : `w-10`} justify-center`
+            }
+            icon={sidebar === 0
+              ? <ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4`} />
+              : ""}
+          >
+            <ListItem className="p-0" selected={open === 1}>
+              <AccordionHeader
+                onClick={() => handleOpen(1)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <PresentationChartBarIcon className="h-5" />
+                </ListItemPrefix>
+
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  {`${sidebar === 0 ? "CMS" : ""}`}
+                </Typography>
+
+              </AccordionHeader>
+            </ListItem>
 
 
-        </Accordion>
+            <AccordionBody className={`py-1 ${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
+              <List className="p-0">
 
+                <Link to={"/TermsAndConditions"}>
+                  <ListItem>
+                    <ListItemPrefix>
+                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                    </ListItemPrefix>
+                    Terms & Conditions
+                  </ListItem>
+                </Link>
 
-        <Accordion
-          open={open === 1}
-          className={`${sidebar === 0
-            ? `w-full`
-            : `w-10`} justify-center`
-          }
-          icon={sidebar === 0
-            ? <ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4`} />
-            : ""}
-        >
-          <ListItem className="p-0" selected={open === 1}>
-            <AccordionHeader
-              onClick={() => handleOpen(1)}
-              className="border-b-0 p-3"
-            >
-              <ListItemPrefix>
-                <PresentationChartBarIcon className="h-5" />
-              </ListItemPrefix>
+                <Link to={"/PrivacyPolicy"}>
+                  <ListItem>
+                    <ListItemPrefix>
+                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                    </ListItemPrefix>
+                    Privacy Policy
+                  </ListItem>
+                </Link>
 
-              <Typography color="blue-gray" className="mr-auto font-normal">
-                {`${sidebar === 0 ? "CMS" : ""}`}
-              </Typography>
-
-            </AccordionHeader>
-          </ListItem>
-
-
-          <AccordionBody className={`py-1 ${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
-            <List className="p-0">
-
-              <Link to={"/TermsAndConditions"}>
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Terms & Conditions
-                </ListItem>
-              </Link>
-
-              <Link to={"/PrivacyPolicy"}>
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Privacy Policy
-                </ListItem>
-              </Link>
-
-              <Link to={"/AboutsUS"}>
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  About us
-                </ListItem>
-              </Link>
-            </List>
-          </AccordionBody>
-        </Accordion>
-      </List>
-
-    </Card>
+                <Link to={"/AboutsUS"}>
+                  <ListItem>
+                    <ListItemPrefix>
+                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                    </ListItemPrefix>
+                    About us
+                  </ListItem>
+                </Link>
+              </List>
+            </AccordionBody>
+          </Accordion>
+        </List>
+      </Card>
+    </>
   );
 }

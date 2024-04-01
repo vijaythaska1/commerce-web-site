@@ -89,7 +89,7 @@ const TABLE_ROWS = [
 function Studentlisting() {
     const navegate = useNavigate()
     return (
-        <Card className="w-full">
+        <Card className="w-full overflow:hidden">
             <CardBody className="px-0">
                 <CardHeader floated={false} shadow={false} className="rounded-none">
                     <div className="mb-8 flex items-center justify-between gap-8">
