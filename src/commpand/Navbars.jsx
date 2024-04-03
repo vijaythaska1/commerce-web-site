@@ -24,18 +24,19 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { togglesidebar } from "../Redux/SidebarSlice";
 
-// profile menu component
 const profileMenuItems = [
   {
     label: "My Profile",
     icon: UserCircleIcon,
-    to:"/profile"
+    to: "/profile"
   },
   {
     label: "Change Password",
     icon: Cog6ToothIcon,
-    to:"/ChangePassword"
+    to: "/ChangePassword"
   },
   // {
   //   label: "Inbox",
@@ -48,7 +49,7 @@ const profileMenuItems = [
   {
     label: "Sign Out",
     icon: PowerIcon,
-    to:"/"
+    to: "/"
   },
 ];
 
@@ -84,27 +85,27 @@ function ProfileMenu() {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
             <Link to={to}>
-            <MenuItem
-              key={label}
-              onClick={closeMenu}
-              className={`flex items-center gap-2 rounded ${isLastItem
-                ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                : ""
-                }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-              <Typography
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
+              <MenuItem
+                key={label}
+                onClick={closeMenu}
+                className={`flex items-center gap-2 rounded ${isLastItem
+                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+                  : ""
+                  }`}
               >
-                {label}
-              </Typography>
-            </MenuItem>
+                {React.createElement(icon, {
+                  className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
+                  strokeWidth: 2,
+                })}
+                <Typography
+                  as="span"
+                  variant="small"
+                  className="font-normal"
+                  color={isLastItem ? "red" : "inherit"}
+                >
+                  {label}
+                </Typography>
+              </MenuItem>
             </Link>
           );
         })}
@@ -193,8 +194,11 @@ function NavListMenu() {
 
 export function Navbars() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
+
+  const dispatch = useDispatch(togglesidebar)
+  const value = useSelector(store => store).sidebar.value
+
 
   React.useEffect(() => {
     window.addEventListener(
@@ -204,8 +208,13 @@ export function Navbars() {
   }, []);
 
   return (
-    <Navbar className="ml-3 mr-9  lg:rounded-full lg:pl-6 ">
+    <Navbar className="ml-3 mr-9 lg:rounded-full lg:pl-6 ">
       <div className="relative  flex items-center justify-between text-blue-gray-900">
+       { value == 1? <span class="material-symbols-outlined"
+          onClick={() => dispatch(togglesidebar())}
+        >
+          menu
+        </span> : ""}
         <Typography
           as="a"
           href="#"

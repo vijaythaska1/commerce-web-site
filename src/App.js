@@ -12,17 +12,22 @@ import TermsAndConditions from './pages/CMS/TermsAndConditions.jsx';
 import PrivacyPolicy from './pages/CMS/PrivacyPolicy.jsx';
 import AddStudent from './pages/Student/AddStudent.jsx';
 import StudentView from './pages/Student/StudentView.jsx';
-function App() {
 
+
+
+function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path='/' element={<Loginpage />} />
         <Route element={<Layout />}>
           <Route path='/Dashboard' element={<Dashboard />} />
+
           {/* Admin */}
           <Route path='/profile' element={<Profile />} />
           <Route path='/ChangePassword' element={<ChangePassword />} />
+
           {/* Student */}
           <Route path='/Studentlisting' element={<Studentlisting />} />
           <Route path='/AddStudent' element={<AddStudent />} />
@@ -36,6 +41,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+
 
   );
 }

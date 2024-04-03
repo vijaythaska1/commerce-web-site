@@ -81,7 +81,7 @@ function ChangePassword() {
                         </div>
                     </div>
                     <div className="w-96 flex justify-end mt-10">
-                        <Button  loading={true}>Submit</Button>
+                        <Button loading={true}>Submit</Button>
                     </div>
 
 

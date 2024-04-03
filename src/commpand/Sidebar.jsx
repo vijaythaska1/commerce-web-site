@@ -20,21 +20,25 @@ import {
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/sidebarimage.png"
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
+import { togglesidebar } from "../Redux/SidebarSlice";
 
 export function Sidebar() {
   const [open, setOpen] = React.useState(0);
-  const [sidebar, setsidebar] = useState(0)
+  const sidebar = useSelector(store => store?.sidebar?.value);
+  const dispatch = useDispatch();
+  const sidebarvalue = useSelector(state => state.sidebar.value);
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
   const sidebaropen = () => {
-    setsidebar(sidebar === 1 ? 0 : 1)
+    dispatch(togglesidebar())
   };
 
   return (
     <>
       <Card className={`h-full 
-    ${sidebar === 0
+    ${sidebarvalue === 0
           ? `w-full`
           : `w-20`} 
       max-w-[20rem] p-4 shadow-xl transition-all duration-300 ease-in-out`}
