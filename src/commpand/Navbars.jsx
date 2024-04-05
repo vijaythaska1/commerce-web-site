@@ -208,13 +208,13 @@ export function Navbars() {
   }, []);
 
   return (
-    <Navbar className="ml-3 mr-9 lg:rounded-full lg:pl-6 ">
-      <div className="relative  flex items-center justify-between text-blue-gray-900">
-       { value == 1? <span class="material-symbols-outlined"
+    <Navbar className="rounded-none lg:pl-6">
+      <div className="relative flex items-center justify-between text-blue-gray-900">
+        <span class="material-symbols-outlined"
           onClick={() => dispatch(togglesidebar())}
         >
           menu
-        </span> : ""}
+        </span> 
         <Typography
           as="a"
           href="#"

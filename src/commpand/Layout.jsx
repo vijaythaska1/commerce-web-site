@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 function Layout() {
     return (
-        <div className='w-full h-screen flex bg-gray-100 pr-5'>
+        <div className='w-full h-screen flex bg-gray-100 '>
             <div className='min-h-full'>
                 <Sidebar />
             </div>

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect('mongodb+srv://vijay:vijay@atlascluster.5bqstxh.mongodb.net/adminpanel')
+mongoose.connect('mongodb+srv://vijay:vijay@atlascluster.5bqstxh.mongodb.net/college')
     .then(() => {
         console.log('Mongoose connect');
     }).catch((error) => {
