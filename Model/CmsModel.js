@@ -14,6 +14,6 @@ const CmsSchema = mongoose.Schema({
         require,
     },
 
-},{timeStamp:true})
+}, { timeStamp: true })
 
-export default  mongoose.mode("Cms", CmsSchema)
+export default mongoose.mode("Cms", CmsSchema)

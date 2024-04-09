@@ -12,6 +12,12 @@ const UserModel = new mongoose.Schema({
     },
     email: {
         type: String,
+        required: true,
+        default: "",
+    },
+    phoneNumber: {
+        type: Number,
+        required: true,
         default: ""
     },
     password: {
