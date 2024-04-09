@@ -3,8 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
-dotenv.config();
-
+dotenv.config({
+    path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
+})
 // Regular expression for validating UUIDs
 const uuidRegex = /^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i;
 
@@ -146,7 +147,7 @@ export default {
         });
     },
 
-    failed: function (res, message = "") {
+    failed: async (res, message = "") => {
         message =
             typeof message === "object"
                 ? message.message
@@ -160,4 +161,73 @@ export default {
             body: {},
         });
     },
+
+    dataValidator: async (validationSchema, data) => {
+        try {
+            const validation = validationSchema.validate(data);
+            if (validation.error) {
+                let message = validation.error.details[0].message;
+                message = message.split(" ");
+                message[0] = message[0].split('"')[1];
+                let erroeMessage = "";
+                message.map((w) => (erroeMessage += ` ${w}`));
+                throw { message: erroeMessage.trim(), statusCode: 400 };
+            }
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    AsyncHanddle: (fn) => {
+        return async (req, res, next) => {
+            try {
+                await fn(req, res, next);
+            } catch (err) {
+                console.log("error: -", err);
+                let errorMEssage = "";
+                if (typeof err === 'string') errorMEssage = err;
+                if (typeof err === 'object') errorMEssage = err?.message;
+                return failed(res, errorMEssage)
+            }
+        };
+    },
+    asyncMiddleware: async (req, res, next) => {
+        try {
+            const SECRET_KEY = req.headers['secret_key'];
+            const PUBLISH_KEY = req.headers['publish_key'];
+            if (process.env.SECRET_KEY === SECRET_KEY &&
+                process.env.PUBLISH_KEY === PUBLISH_KEY) {
+                next()
+            }
+            return res.status(404).send({
+                message: "key is not macth"
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    authenticateToken: async (req, res, next) => {
+        try {
+            const authHeader = req.headers["authorization"];
+            const token = authHeader.split(' ')[1];
+            if (!token) {
+                return res.status(401).json({ message: "Unauthorized" });
+            }
+            const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+            if (!decodedToken) {
+                return res.status(403).json({ message: "Invalid token" });
+            }
+            const isValidUser = await userModel.findOne({ _id: decodedToken._id });
+            if (!isValidUser) {
+                return res.status(403).json({ message: "Invalid token" });
+            }
+            req.user = isValidUser;
+            next();
+        } catch (error) {
+
+        }
+    }
+
 };

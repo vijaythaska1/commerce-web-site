@@ -8,8 +8,13 @@ import dotenv from 'dotenv';
 import router from "./router/index.js";
 import users from "./router/APIs.js";
 import helper from "./utility/helper.js";
-// import server from "./cofing/server.config.js"
-const PORT = process.env.PORT || 4500
+
+dotenv.config({
+    path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
+})
+
+// import server from "./cofing/server.config.js"a
+const PORT = process.env.PORTs 
 const catchServerErrors = helper.catchServerError
 
 const app = express();

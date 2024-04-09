@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
-
-mongoose.connect('mongodb+srv://vijay:vijay@atlascluster.5bqstxh.mongodb.net/college')
+import dotenv from 'dotenv';
+dotenv.config({
+    path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
+})
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => {
         console.log('Mongoose connect');
     }).catch((error) => {
         console.log(`Mongodb connection error -:${error}`);
     });
-

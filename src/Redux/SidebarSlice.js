@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import { fetchData } from '../axios/axios.js';
 const initialState = {
   value: 0,
+  data: []
 }
 
 export const SidebarSlice = createSlice({
@@ -13,6 +14,12 @@ export const SidebarSlice = createSlice({
       return state
     },
   },
+  extraReducers: (bulder) => {
+    bulder.addCase(fetchData.fulfilled, (state, action) => {
+      state.data = action.payload
+    })
+  }
+
 })
 
 

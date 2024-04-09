@@ -1,5 +1,6 @@
-import UserModel from "../Model/UserModel";
-import helper from "../utility/helper";
+import UserModel from "../Model/UserModel.js";
+
+import helper from "../utility/helper.js";
 import bcrypt from "bcrypt";
 export default {
     changepassword: helper.TryCatchHanddler(async (req, res) => {
@@ -18,7 +19,12 @@ export default {
         helper.success(res, "Password Change successfully")
     }),
 
-    login: helper.TryCatchHanddler(async (res, res) => {
-        const data = await UserModel.find();
-})
+    login: helper.TryCatchHanddler(async (req, res) => {
+        const { email } = req.body;
+        const data = await UserModel.find({ email });
+        if (!data) { return helper.failed(res, "Invalid Email") }
+        const match = await bcrypt.compare(password, data.password);
+        if (!match) { return helper.failed(res, "Invalid Password") };
+        return helper.success(res, "login Successfully", data);
+    })
 }
