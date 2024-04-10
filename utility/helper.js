@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import jwt from 'jsonwebtoken';
+import UserModel from '../Model/UserModel.js';
 dotenv.config({
     path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
 })
@@ -139,19 +141,20 @@ export default {
     TryCatchHanddler: (fun) => {
         return async (req, res, next) => {
             try {
-                fun(req, res, next);
+                await fun(req, res, next);
             } catch (err) {
+                console.error(err);
                 const errorResponse = {
-                    message: err?.message ? err?.message : "Internal server error",
-                    statusCode: 501,
+                    message: err.message || "Internal server error",
+                    statusCode: err.statusCode || 500,
                     body: {}
-                }
-                return res.status(errorResponse?.statusCode).send(errorResponse)
+                };
+                return res.status(errorResponse.statusCode).send(errorResponse);
             }
         };
     },
 
-    dataValidator: async (validationSchema, data) => {
+    dataValidator: (validationSchema, data) => {
         try {
             const validation = validationSchema.validate(data);
             if (validation.error) {
@@ -164,7 +167,8 @@ export default {
             }
             return true;
         } catch (err) {
-            throw err;
+            console.log(err);
+            throw err
         }
     },
 
@@ -200,10 +204,12 @@ export default {
             if (process.env.SECRET_KEY === SECRET_KEY &&
                 process.env.PUBLISH_KEY === PUBLISH_KEY) {
                 next()
+            } else {
+                return res.status(404).send({
+                    message: "key is not macth"
+                })
             }
-            return res.status(404).send({
-                message: "key is not macth"
-            })
+
         } catch (error) {
             console.log(error);
         }
@@ -214,20 +220,18 @@ export default {
             const authHeader = req.headers["authorization"];
             const token = authHeader.split(' ')[1];
             if (!token) {
-                return res.status(401).json({ message: "Unauthorized" });
+                return failed(res, "Unauthorized");
             }
             const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
-            if (!decodedToken) {
-                return res.status(403).json({ message: "Invalid token" });
-            }
-            const isValidUser = await userModel.findOne({ _id: decodedToken._id });
+            const isValidUser = await UserModel.findOne({ id: decodedToken._id });
             if (!isValidUser) {
-                return res.status(403).json({ message: "Invalid token" });
+                return failed(res, "Invalid token");
             }
             req.user = isValidUser;
             next();
         } catch (error) {
             console.log(error);
+            return failed(res, "Invalid token");
         }
     }
 

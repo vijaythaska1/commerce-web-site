@@ -19,7 +19,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path='/' element={<Loginpage />} />
         <Route element={<Layout />}>
           <Route path='/Dashboard' element={<Dashboard />} />
