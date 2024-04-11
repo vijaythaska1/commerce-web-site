@@ -11,13 +11,13 @@ const setupGlobalVariables = () => {
     // CONSOLE LOG UTILITYSi
     global.log = {
         success: (arg) => {
-            console.log(chalk.bold.white(`${chalk.green('[Node:- success]')} ${arg}`))
+            console.log(chalk.bold.white(`${chalk.green('[Node:- success]')} ${arg}`));
         },
         warn: (arg) => {
-            console.log(chalk.bold.blue(`${chalk.yellow('[Node:- warn]')} ${arg}`))
+            console.log(chalk.bold.blue(`${chalk.yellow('[Node:- warn]')} ${arg}`));
         },
         error: (arg) => {
-            console.log(chalk.bold.red(`${chalk.yellow('[Node:- error]')} ${arg}`))
+            console.log(chalk.bold.red(`${chalk.yellow('[Node:- error]')} ${arg}`));
         },
     }
 };

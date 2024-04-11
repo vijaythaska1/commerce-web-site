@@ -5,39 +5,39 @@ import Joi from "joi";
 
 export default {
     UserCreate: helper.AsyncHanddle(async (req, res) => {
-
         const validationSchema = Joi.object().required().keys({
-            role: Joi.number().valid(1, 2),
-            name: Joi.string().required(),
-            email:Joi.string().email().required(),
-            phoneNumber:Joi.string().length(10).pattern(/[6-9]{1}[0-9]{9}/).required(),
-            password: Joi.string().min(6).max(100),
+            role: Joi.number().integer().valid(0, 1, 2),
+            rollNo: Joi.string().required(),
+            firstName: Joi.string().required(),
+            lastname: Joi.string().required(),
+            department: Joi.string().required(),
+            status: Joi.number().valid(0, 1),
+            gender: Joi.number().valid(0, 1, 2).required(),
+            phoneNumber: Joi.number().integer().min(10).required(),
+            password: Joi.string().alphanum().min(6).max(100),
+            addmessionDate: Joi.date(),
+            image: Joi.string().required(),
+            document: Joi.string().required(),
+            email: Joi.string().email().required(),
+            authToken: Joi.string(),
             deviceToken: Joi.string(),
-            deviceTypes: Joi.number().valid(0, 1)
+            deviceTypes: Joi.number().integer().valid(0, 1)
         });
         helper.dataValidator(validationSchema, req?.body);
-        const { role, name, email, phoneNumber, password } = req.body;
+        const { role, rollNo, firstName, lastname, email, phoneNumber, department, gender, status, addmessionDate, image, document, password } = req.body;
         const emailMatch = await UserModel.findOne({ $or: [{ email }, { phoneNumber }] });
         if (emailMatch) {
-            if (emailMatch?.email == req.body.email && emailMatch?.phoneNumber == req.body.phoneNumber) {
+            if (emailMatch.email == email && emailMatch.phoneNumber == phoneNumber) {
                 return helper.failed(res, "Email or PhoneNumber already exists");
-            } else if (emailMatch?.email === req.body.email) {
+            } else if (emailMatch.email == email) {
                 return helper.failed(res, "Email already exists");
-            } else if (emailMatch?.phoneNumber === req.body.phoneNumber) {
+            } else if (emailMatch.phoneNumber == phoneNumber) {
                 return helper.failed(res, "Phone number already exists");
             }
         }
         const hash = await bcrypt.hash(password, 10);
-        const newUser = await UserModel.create({ role, name, email, phoneNumber, password: hash });
+        const newUser = await UserModel.create({ role, rollNo, firstName, lastname, email, phoneNumber, password: hash, department, status, gender, addmessionDate, image, document, });
         return helper.success(res, "User Created Successfully", newUser);
     }),
 }
 
-
-// const validationSchema = Joi.object().keys({
-//     name: Joi.string().required(),
-//     role: Joi.string().required(),
-//     email: Joi.string().email().required(),
-//     password: Joi.string().required()
-// });
-// helper.dataValidator(validationSchema, req.body);

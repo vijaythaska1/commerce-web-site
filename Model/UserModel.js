@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const UserModel = new mongoose.Schema({
     role: {
         type: Number,
-        enum: [0, 1, 2], //0 Student 1 Tacher 3 Admin
+        enum: [0, 1, 2], //0 Admin 1 Tacher 3 Student
         default: 1
     },
     rollNo: {
@@ -26,10 +26,6 @@ const UserModel = new mongoose.Schema({
         type: Number,
         enum: [0, 1, 3],
     },
-    moblie: {
-        type: Number,
-        default: 0
-    },
     email: {
         type: String,
         required: true,
@@ -44,13 +40,26 @@ const UserModel = new mongoose.Schema({
         type: String,
         default: ""
     },
+    status: {
+        type: Number,
+        enum: [0, 1], //0 active  1 inactive 
+        default: 0
+    },
     addmessionDate: {
         type: Date,
     },
-    joining: {
-        type: String,
-        default: ""
+    joiningdate: {
+        type: Date,
+        default: new Date()
     },
+    image: {
+        type: String,
+        default: "",
+    },
+    document: [{
+        type: String,
+        default: "",
+    }],
     authToken: {
         type: String,
         default: "",

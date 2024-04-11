@@ -6,7 +6,7 @@ import path from 'path';
 import jwt from 'jsonwebtoken';
 import UserModel from '../Model/UserModel.js';
 dotenv.config({
-    path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
+    path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.developments'
 })
 // Regular expression for validating UUIDs
 const uuidRegex = /^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i;
@@ -43,12 +43,12 @@ export default {
     uploadFile: async (req, res) => {
         try {
             // Extracting uploaded files from request object
-            const files = Array.isArray(req.files.file)
-                ? req.files.file
-                : [req.files.file];
+            const files = Array.isArray(req?.files?.file)
+                ? req?.files?.file
+                : [req?.files?.file];
 
             // Iterating over each file
-            const uploadResults = await Promise.all(files.map(async (file) => {
+            const uploadResults = await Promise.all(files?.map(async (file) => {
                 if (!file) {
                     return {
                         success: false,
@@ -72,7 +72,7 @@ export default {
 
                 // Generating unique file name
                 const fileNameUnic = `${uuidv4()}-${file.name}`;
-                const fileBasePath = `/uploads/${fileType}/${fileNameUnic}`;
+                const fileBasePath = `uploads/${fileType}/${fileNameUnic}`;
 
                 // Constructing file path
                 const filePath = path.join(uploadDir, fileNameUnic);
@@ -108,11 +108,7 @@ export default {
 
         } catch (error) {
             console.log(error);
-            return res.status(500).Json({
-                message: 'Internal server error',
-                success: false,
-                error: error.message
-            });
+            return failed(res, "Internal server error", error)
         }
     },
 

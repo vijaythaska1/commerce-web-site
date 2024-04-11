@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import image from "../assets/fall-zoom-5.jpg";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
 import {
     Card,
     CardHeader,
@@ -11,11 +12,21 @@ import {
     Checkbox,
     Button,
 } from "@material-tailwind/react";
+// import { loginApi } from "../axios/Index.js";
+// import { loginUserPost } from "../axios/APIs.js";
+import APIS from "../axios/Index.js";
 function Loginpage() {
     function Typography({ children }) {
         return <span>{children}</span>;
     }
-
+    //   const dispatch=useDispatch()
+    const loginUser = () => {
+        let data = {
+            email: "admin@gmail.com",
+            password: "1234567"
+        }
+        APIS.authLogin(data)
+    }
     const navegate = useNavigate()
     return (
         <section
@@ -62,14 +73,15 @@ function Loginpage() {
                     </div>
                 </CardBody>
                 <CardFooter className="pt-0">
-                    <Button onClick={() => navegate("/profile")} variant="gradient" fullWidth>
+                    <Button onClick={loginUser} variant="gradient" fullWidth>
                         Sign In
                     </Button>
                     <Typography variant="small" className="mt-6 flex justify-center">
                         Don&apos;t have an account?
                         <Link
                             as="a"
-                            to={"/Dashboard"}
+                            onClick={loginUser}
+                            // to={"/Dashboard"}
                             variant="small"
                             color="blue-gray"
                             className="ml-1 font-bold"

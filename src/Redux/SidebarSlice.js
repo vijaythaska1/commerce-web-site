@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchData } from '../axios/axios.js';
+import { fetchData, loginUserPost } from '../axios/APIServices.js';
+import APIS from '../axios/Index.js';
 const initialState = {
   value: 0,
-  data: []
+  data: [],
+  isLogin: false,
+  authUser: {}
 }
 
 export const SidebarSlice = createSlice({
@@ -15,8 +18,9 @@ export const SidebarSlice = createSlice({
     },
   },
   extraReducers: (bulder) => {
-    bulder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload
+    bulder.addCase(APIS?.authLogin.fulfilled , (state , action) => {
+  
+console.log( action.payload);
     })
   }
 

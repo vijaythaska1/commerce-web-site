@@ -1,14 +1,13 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-// export {
-//     fetchData:c
-// }
+const token = JSON.parse(localStorage.getItem("adminprofile"));
 
-export const fetchData = createAsyncThunk('/type/fetchdata', async () => {
-    try {
-        const respons = await axios.get('api')
-        return respons
-    } catch (error) {
 
+export const http = axios.create({
+    baseURL: process.env.REACT_APP_PUBLIC_URL,
+    headers: {
+        SECRET_KEY: process.env.REACT_APP_SECRET_KEY,
+        PUBLISH_KEY: process.env.REACT_APP_PUBLISH_KEY,
+        Authorization: 'Bearer ' + token
     }
 })
+

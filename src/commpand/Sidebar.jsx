@@ -38,7 +38,7 @@ export function Sidebar() {
   return (
     <>
       <Card className={`h-full ${sidebarvalue === 0 ? `w-full` : `hidden`} max-w-[20rem] p-4 shadow-xl transition-all duration-300 ease-in-out`}>
-      <div className={`flex ${sidebar === 0 ? "justify-end" : "justify-center mb-3"} relative top-1`}>
+        <div className={`flex ${sidebar === 0 ? "justify-end" : "justify-center mb-3"} relative top-1`}>
           {/* <span class="material-symbols-outlined"
             onClick={sidebaropen}
           >
