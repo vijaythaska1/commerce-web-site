@@ -1,535 +1,583 @@
-import jwt from "jsonwebtoken";
-import joi from "joi";
-import moment from "moment";
-import mongoose from "mongoose";
-import userModel from "../Model/UserSchame.js";
-import chatModel from "../Model/chats.js";
-import messageModel from "../Model/mesagesSchema.js";
-import { dataValidator, notificationManager, notificationTypes } from "../config/validator.js";
-const session = {};
-const errorNotifyer = (io, socket, err) => {
-    console.log("err =============>", err);
-    const socketId = socket.id;
-    if (err) {
-        if (typeof err === "string") {
-            if (err === "Unauthorization") {
-                err = "error_message:Unauthorized invailed authorization token";
-            }
-        } else if (typeof err === "object") {
-            err.message ? (err = err?.message) : err;
-        } else err = "Connection refused";
-    } else err = "Connection refused";
-    io.to(socketId).emit("errorNotifyer", { message: err });
-};
-export default {
-    authConnection: async (io, socket, next) => {
-        try {
-            const sendError = (message) => {
-                !message ? (message = "Unauthorized") : message;
-                throw message;
-            };
-            if (!socket.handshake) sendError();
-            if (!socket.handshake.headers) sendError();
-            if (!socket.handshake.headers.authorization) sendError();
-            const authToken = socket.handshake.headers.authorization;
-            const jwtSecretToken = process?.env?.SECRET_KEY;
-            const decoded = jwt.verify(authToken, jwtSecretToken);
-            const currentUser = await userModel.findOne({ _id: decoded?._id });
-            if (!currentUser) sendError();
-            // if (currentUser?.isOnline === 1) sendError();
-            socket.userData = currentUser;
-            next();
-        } catch (err) {
-            console.log('err ===============>', err);
-            next(new Error(err));
-        }
-    },
-    handdleDuplicateConnection: async (io, socket) => {
-        const _id = socket?.userData?.id;
-        if (session[_id]) {
-            session[_id]?.disconnect(true);
-            session[_id] = socket
-        }
-        else {
-            session[_id] = socket
-        }
-    },
-    handdleUserConnect: async (io, socket) => {
-        try {
-            const socketId = socket.id;
-            const _id = socket?.userData?.id;
-            await userModel.updateOne({ _id }, { $set: { socketId, isOnline: 1 } });
-            io.to(socketId).emit("connectListenerr", {
-                message: "User connected succesfully",
-            });
-        } catch (error) {
-            errorNotifyer(io, socket, err);
-        }
-    },
-    disconnectUser: async (io, socket, data) => {
-        try {
-            const _id = socket?.userData?.id;
-            await userModel.updateOne({ _id }, { $set: { isOnline: 0 } });
-        } catch (err) {
-            errorNotifyer(io, socket, err);
-        }
-    },
-    sendMessage: async (io, socket, data) => {
-        try {
-            const validationSchem = joi
-                .object()
-                .required()
-                .keys({
-                    receiverId: joi.string().required(),
-                    message: joi.string().required(),
-                    type: joi.number().required().valid(1, 2, 3),
-                });
-            dataValidator(validationSchem, data);
-            const { receiverId, message, type } = data;
-            const senderId = socket?.userData?.id;
-            const socketId = socket?.id;
-            if (senderId.toString() === receiverId) throw "Invalied receiverId";
-            const receverDetails = await userModel.findOne({ _id: receiverId });
-            if (!receverDetails) throw "Invalied receiverId";
-            let chatId = null;
-            const isChatExist = await chatModel.findOne({
-                $or: [{ senderId, receiverId }, { receiverId: senderId, senderId: receiverId }],
-            });
-            if (!isChatExist) {
-                const newChat = await chatModel.create({
-                    senderId,
-                    receiverId,
-                })
-                chatId = newChat?._id
-            } else chatId = isChatExist?._id;
-            await chatModel.updateOne({ _id: chatId }, { $set: { "lastMessage.message": message, "lastMessage.messageType": type, "lastMessage.date": moment().valueOf() } });
-            const newMessage = await messageModel.create({
-                senderId,
-                receiverId,
-                chatId,
-                message,
-                message_type: type
-            });
-            io.to(socketId).emit("send-message-status", {
-                status: 200,
-                message: "Message sended succesfully",
-            });
-            // notify to recever
-            if (receverDetails?.isOnline === 1) {
-                const newMessageForRecever = {
-                    _id: newMessage?._id,
-                    message,
-                    message_type: newMessage?.message_type,
-                    is_read: newMessage?.is_read,
-                    createdAt: newMessage?.createdAt,
-                    mesageType: 2,
-                    name: socket?.userData?.name,
-                    image: socket?.userData?.image,
-                    isOnline: 1
-                }
-                io.to(receverDetails?.socketId).emit("receve-message", newMessageForRecever);
-            }
-            else {
-                // send push notification here
-                if (receverDetails?.notificationStatus === 1) {
-                    const notification = {
-                        senderId,
-                        receiverId,
-                        message: `${socket?.userData?.name} send you a message`,
-                        type: notificationTypes?.sendMessageAlert
-                    }
-                    notificationManager(notification?.senderId, notification?.receiverId, notification?.message, notification?.type)
-                }
-            }
-        } catch (err) {
-            console.log('err =============>', err);
-            errorNotifyer(io, socket, err);
-        }
-    },
-    getChatListing: async (io, socket, data) => {
-        try {
-            const userId = socket?.userData?.id;
-            const socketId = socket?.id;
-            const select = ['name', 'image', 'isOnline']
-            const populateQuery = [
-                {
-                    path: "senderId",
-                    select
-                },
-                {
-                    path: "receiverId",
-                    select
-                }
-            ]
-            const isChatExist = await chatModel.find({
-                $or: [{ senderId: userId }, { receiverId: userId, }],
-            }).populate(populateQuery);
-            const filtredChats = [];
-            for (let i = 0; i < isChatExist.length; i++) {
-                const { senderId, receiverId, lastMessage } = isChatExist[i];
-                if (senderId) {
-                    if (senderId?._id?.toString() === userId?.toString()) {
-                        filtredChats.push({ ...receiverId?._doc, lastMessage })
-                    }
-                }
-                if (receiverId) {
-                    if (receiverId?._id?.toString() === userId?.toString()) {
-                        filtredChats.push({ ...senderId?._doc, lastMessage })
-                    }
-                }
-            }
-            io.to(socketId).emit("chats-get-status", {
-                status: 200,
-                message: "Get chat list succesfully",
-                data: filtredChats
-            });
-        }
-        catch (err) {
-            console.log('err =============>', err);
-            errorNotifyer(io, socket, err);
-        }
-    },
-    getChatListing2: async (io, socket, data) => {
-        try {
-            const userId = socket?.userData?._id;
-            const socketId = socket?.id;
-            const list = await chatModel.aggregate([
-                {
-                    $match: {
-                        $or: [
-                            {
-                                senderId: userId
-                            },
-                            {
-                                receiverId: userId
-                            },
-                        ],
-                    },
-                },
-                {
-                    $sort: {
-                        updatedAt: -1,
-                    },
-                },
-                {
-                    $project: {
-                        senderId: 1,
-                        receiverId: 1,
-                        lastMessage: 1,
-                        createdAt: 1,
-                        blockedBy: 1,
-                        isSender: {
-                            $cond: [
-                                {
-                                    $in: [
-                                        "$senderId",
-                                        [
-                                            userId
-                                        ],
-                                    ],
-                                },
-                                1,
-                                2,
-                            ],
-                        },
-                        isBloked: {
-                            $cond: [
-                                {
-                                    $in: [
-                                        "$blockedBy",
-                                        [
-                                            userId
-                                        ],
-                                    ],
-                                },
-                                1,
-                                0,
-                            ],
-                        },
-                    },
-                },
-                {
-                    $lookup: {
-                        from: "users",
-                        localField: "senderId",
-                        foreignField: "_id",
-                        as: "senderId",
-                        pipeline: [
-                            {
-                                $project: {
-                                    name: 1,
-                                    image: 1,
-                                    isOnline: 1,
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $unwind: {
-                        path: "$senderId",
-                        preserveNullAndEmptyArrays: false,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: "users",
-                        localField: "receiverId",
-                        foreignField: "_id",
-                        as: "receiverId",
-                        pipeline: [
-                            {
-                                $project: {
-                                    name: 1,
-                                    image: 1,
-                                    isOnline: 1,
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $unwind: {
-                        path: "$receiverId",
-                        preserveNullAndEmptyArrays: false,
-                    },
-                },
-                {
-                    $project: {
-                        recever: {
-                            $cond: [
-                                { $eq: ["$isSender", 1] },
-                                "$receiverId",
-                                "$senderId",
-                            ],
-                        },
-                        lastMessage: 1,
-                        isBloked: 1,
-                    },
-                },
-                {
-                    $project: {
-                        _id: "$recever._id",
-                        name: "$recever.name",
-                        image: "$recever.image",
-                        isOnline: "$recever.isOnline",
-                        lastMessage: 1,
-                        isBloked: 1,
-                    },
-                },
-            ])
-            io.to(socketId).emit("chats-get-status", {
-                status: 200,
-                message: "Get chat list succesfully",
-                data: list
-            });
-        }
-        catch (err) {
-            console.log('err =============>', err);
-            errorNotifyer(io, socket, err);
-        }
-    },
-    getMessageListig: async (io, socket, data) => {
-        try {
-            const validationSchem = joi
-                .object()
-                .required()
-                .keys({
-                    receiverId: joi.string().required(),
-                });
-            dataValidator(validationSchem, data);
-            const { receiverId } = data;
-            const senderId = socket?.userData?.id;
-            const socketId = socket?.id;
-            const isChatExist = await chatModel.findOne({
-                $or: [{ senderId, receiverId }, { receiverId: senderId, senderId: receiverId }],
-            });
-            let messages = [];
-            if (isChatExist) {
-                messages = await messageModel.aggregate([
-                    {
-                        $match: {
-                            chatId: isChatExist?._id,
-                            deletedBy: {
-                                $nin: [new mongoose.Types.ObjectId(senderId)]
-                            }
-                        },
-                    },
-                    {
-                        $lookup: {
-                            from: "users",
-                            localField: "senderId",
-                            foreignField: "_id",
-                            as: "senderId",
-                            pipeline: [
-                                {
-                                    $project: {
-                                        name: 1,
-                                        image: 1,
-                                        isOnline: 1,
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                    {
-                        $lookup: {
-                            from: "users",
-                            localField: "receiverId",
-                            foreignField: "_id",
-                            as: "receiverId",
-                            pipeline: [
-                                {
-                                    $project: {
-                                        name: 1,
-                                        image: 1,
-                                        isOnline: 1,
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                    {
-                        $unwind: {
-                            path: "$senderId",
-                            preserveNullAndEmptyArrays: false,
-                        },
-                    },
-                    {
-                        $unwind: {
-                            path: "$receiverId",
-                            preserveNullAndEmptyArrays: false,
-                        },
-                    },
-                    {
-                        $project: {
-                            senderId: 1,
-                            receiverId: 1,
-                            message: 1,
-                            message_type: 1,
-                            is_read: 1,
-                            mesageType: {
-                                $cond: [
-                                    {
-                                        $in: [
-                                            "$senderId._id",
-                                            [
-                                                new mongoose.Types.ObjectId(senderId)
-                                            ],
-                                        ],
-                                    },
-                                    1,
-                                    2,
-                                ],
-                            },
-                            createdAt: 1
-                        },
-                    },
-                    {
-                        $project: {
-                            message: 1,
-                            message_type: 1,
-                            is_read: 1,
-                            mesageType: 1,
-                            currentUser: {
-                                $cond: [
-                                    { $in: ["$mesageType", [1]] },
-                                    "$senderId",
-                                    "$receiverId",
-                                ],
-                            },
-                            createdAt: 1
-                        },
-                    },
-                    {
-                        $sort: {
-                            createdAt: -1,
-                        },
-                    },
-                    {
-                        $project: {
-                            message: 1,
-                            message_type: 1,
-                            mesageType: 1,
-                            is_read: 1,
-                            name: "$currentUser.name",
-                            image: "$currentUser.image",
-                            isOnline: "$currentUser.isOnline",
-                            createdAt: 1
-                        },
-                    },
-                ])
-            }
-            io.to(socketId).emit("get-message-listing-status", {
-                status: 200,
-                message: "Get message list succesfully",
-                data: messages
-            });
-        }
-        catch (err) {
-            console.log('err =============>', err);
-            errorNotifyer(io, socket, err);
-        }
-    },
-    claerUserChats: async (io, socket, data) => {
-        try {
-            const validationSchem = joi
-                .object()
-                .required()
-                .keys({
-                    receiverId: joi.string().required(),
-                });
-            dataValidator(validationSchem, data);
-            const { receiverId } = data;
-            const senderId = socket?.userData?.id;
-            const socketId = socket?.id;
-            if (senderId.toString() === receiverId) throw "Invalied receiverId";
-            const isChatExist = await chatModel.findOne({
-                $or: [{ senderId, receiverId }, { receiverId: senderId, senderId: receiverId }],
-            });
-            if (isChatExist) {
-                await messageModel.updateMany({ chatId: isChatExist?._id }, { $set: { deletedBy: senderId } })
-            }
-            //clear-chats
-            io.to(socketId).emit("clear-chats-status", {
-                status: 200,
-                message: "Chats clear succesfully",
-            });
-        }
-        catch (err) {
-            console.log('err =============>', err);
-            errorNotifyer(io, socket, err);
-        }
-    }
-
-
-    // import controllers from "./controllers.js"
-export default(io) => {
-    io.use((socket, next) => controllers.authConnection(io, socket, next));
-    io.on("connection", (socket) => {
-        controllers.handdleDuplicateConnection(io, socket);
-        controllers.handdleUserConnect(io, socket);
-        socket.on("send-message", (data) => controllers.sendMessage(io, socket, data))
-        socket.on("chats", (data) => controllers.getChatListing2(io, socket, data));
-        socket.on("get-message-listing", (data) => controllers.getMessageListig(io, socket, data))
-        socket.on("clear-chats", (data) => controllers.claerUserChats(io, socket, data))
-        socket.on("start-tracking", (data) => controllers.startTracking(io, socket, data))
-        socket.on("disconnect", (data) => controllers.disconnectUser(io, socket, data))
-        socket.on('disconnectClient', () => {
-            socket.disconnect();
+// const { Socket } = require("socket.io");
+const Models = require("../models/index");
+const saveMessage = require("../controller/socketController"); 
+const moment = require("moment");
+const helper=require("../helper/helper")
+// console.log("this is date", moment().format("YYYY-MM-DD"));
+// console.log("this is time", moment().format("LTS"));
+module.exports = function (io) {
+  io.on("connection", (socket) => {
+    // http://192.168.1.210:8747/ when from forntend side start on it give this url instead of localhost give ipV4
+    console.log("connected user", socket.id);
+    //Connect the user  //Test pass
+    socket.on("connect_user", async function (data) {
+      try {
+        const socketId = socket.id;
+        const checkUser = await Models.socketuser.findOne({
+          userId: data.userId,
         });
+
+        if (checkUser) {
+          await Models.socketuser.updateOne(
+            { userId: data.userId },
+            { $set: { status: 1, socketId: socketId } }
+          );
+        } else {
+          await Models.socketuser.create({
+            userId: data.userId,
+            socketId: socketId,
+            status: 1,
+          });
+        }
+
+        let success_msg = {
+          success_msg: "connected successfully",
+        };
+        socket.emit("connect_user_listener", success_msg);
+      } catch (error) {
+        console.error(error);
+      }
     });
-}
-}
+    //On click user seen the all message of user one to one after click on user then seen all chat of one user //Test pass
+    socket.on("users_chat_list", async (get_data) => {
+      try {
+        console.log("this is getdata", get_data);
+        const findConstant = await Models.chatconstant.find({
+          $or: [
+            { senderId: get_data.senderId, reciverId: get_data.reciverId },
+            { reciverId: get_data.senderId, senderId: get_data.reciverId },
+          ],
+        });
 
+        if (findConstant) {
+          const chatList = await Models.message.find({
+            $and: [
+              {
+                $or: [
+                  {
+                    senderId: get_data.senderId,
+                    reciverId: get_data.reciverId,
+                  },
+                  {
+                    reciverId: get_data.senderId,
+                    senderId: get_data.reciverId,
+                  },
+                  { constantId: findConstant._id },
+                ],
+              },
+              {
+                is_delete: { $ne: get_data.senderId },
+              },
+            ],
+          }).populate('senderId', 'profileImage') // Populate sender's profile image
+          .populate('reciverId', 'profileImage'); // Populate receiver's profile image;
+          const count = await Models.message.countDocuments({
+            $and: [
+              {
+                $or: [
+                  {
+                    senderId: get_data.senderId,
+                    reciverId: get_data.reciverId,
+                  },
+                  {
+                    reciverId: get_data.senderId,
+                    senderId: get_data.reciverId,
+                  },
+                  { constantId: findConstant._id },
+                ],
+              },
+              {
+                is_delete: { $ne: get_data.senderId },
+                is_read: 0,
+              },
+            ],
+          });
+          const success_messages = {
+            success_message: "Users Chats",
+            code: 200,
+            unread_message_count:count,
+            // getdatas: chatList,
+            getdata: chatList.map((message) => {
+              const isMessageFromSender =
+                // message.senderId.toString() === get_data.senderId.toString();
+                message.senderId === get_data.senderId;
+              return {
+                ...message.toObject(),
+                messageSide: isMessageFromSender ? "sender" : "other",
+              };
+            }),
+          };
+          socket.emit("users_chat_list_listener", success_messages);
+        } else {
+          const success_message = {
+            error: "Users Chat not found",
+            code: 403,
+          };
+          socket.emit("users_chat_list_listener", success_message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    //List of all user with whom sender-User do chat  //Test pass
+    socket.on("user_constant_list", async (get_data) => {
+      try {
+        const { filter, senderId } = get_data;
+        let order;
+        if (filter === 1) {
+          order = { createdAt: 1 }; // Sort by old to new
+        } else if (filter === 2) {
+          order = { createdAt: -1 }; // Sort by new to old
+        }
+      
+        // Build the query to find chat constants
+        const where = {
+          $or: [
+            { senderId: senderId, is_block: { $ne: 1 } },
+            { reciverId: senderId, is_block: { $ne: 1 } },
+            { senderId: senderId, is_block: { $exists: false } },
+            { reciverId: senderId, is_block: { $exists: false } },
+          ],
+        };
+      
+        if (filter == 3) {
+          where.is_favourite = 1;
+        }
+      
+        // Find all chat constants that match the criteria
+        const constantList = await Models.chatconstant
+          .find(where)
+          .populate({
+            path: "lastmessage",
+            select: "senderId reciverId message message_type is_read",
+            model: Models.message,
+          })
+          .populate({
+            path: "senderId reciverId",
+            select: "id name profileImage email",
+            model: Models.userModel,
+          })
+          .sort(order);
+          console.log("constantList constantList constantList",constantList);
+        // Create an array to store user IDs for whom we want to count unread messages
+        const userIds = constantList.map((constant) => {
+          // console.log("constatnId",constant)
+          if (constant.senderId && constant.senderId._id && constant.senderId._id.toString() === senderId) {
+            return constant.reciverId != null
+              ? constant.reciverId._id?.toString() || constant.reciverId
+              : constant.reciverId;
+          }
+           else {
+            return constant.senderId != null
+              ? constant.senderId._id.toString()
+              : constant.senderId;
+          }
+        });
+        // Initialize an empty object to store unread message counts
+        const unreadMessageCounts = {};
+        // Loop through each user ID and count unread messages
+        for (const userId of userIds) {
+          const count = await Models.message.countDocuments({
+            $and: [
+              {
+                $or: [
+                  {
+                    senderId: userId,
+                  },
+                ],
+              },
+              {
+                reciverId: senderId, // Assuming senderId is the receiver
+                is_read: 0,
+              },
+            ],
+          });
+          unreadMessageCounts[userId] = count;
+        }
+        // Add unread message counts to the constantList
+        constantList.forEach((constant) => {
+          const senderId = constant.senderId?constant.senderId._id.toString():'';
+          const reciverId = constant.reciverId?constant.reciverId._id.toString():'';
+          const userId = senderId === get_data.senderId ? reciverId : senderId;
+          if (userId) {
+            console.log("unreadMessageCounts[userId]",unreadMessageCounts[userId])
+            constant.unreadCount = unreadMessageCounts[userId] || '0';
+          } else {
+            constant.unreadCount = 0; // Handle the case where both senderId and receiverId are null
+          }
+        });
+        const success_message = {
+          success_message: "User Constant Chats List with Unread Message Count",
+          code: 200,
+          getdata: constantList,
+        };
+      
+        socket.emit("user_constant_chat_list", success_message);
+      } catch (error) {
+        console.log(error);
+      }
+      
+    });
+    //Disconnect the user //Test pass
+    socket.on("disconnect_user", async (connect_listener) => {
+      try {
+        const socket_id = socket.id;
+        const check_user = await Models.socketuser.findOne({
+          userId: connect_listener.userId,
+        });
 
+        if (check_user) {
+          await Models.socketuser.updateOne(
+            { userId: connect_listener.userId },
+            { $set: { status: 0 } }
+          );
+        }
+        const success_message = {
+          success_message: "Disconnect successfully",
+          socket_id,
+        };
+        socket.emit("disconnect_listener", success_message);
+      } catch (error) {
+        console.error(error);
+      }
+    });
+    //Message read and unread //Test pass
+    socket.on("read_unread", async function (get_read_status) {
+      try {
+        const updateResult = await Models.message.updateMany(
+          {
+            senderId: get_read_status.senderId,
+            reciverId: get_read_status.reciverId,
+            is_read: 0,
+          },
+          {
+            $set: { is_read: 1 },
+          }
+        );
+        console.log(updateResult, "get_read_unread");
+        const get_read_unread = { is_read: 1 };
+        socket.emit("read_data_status", get_read_unread);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    //Delete the message //test pass 
+    socket.on("delete_message", async (get_data) => {
+      try {
+        let deleteMessage;
+        if (Array.isArray(get_data.id)) {
+          // It's an array of IDs
+          deleteMessage = await Models.message.deleteMany({
+            $or: [
+              { senderId: get_data.senderId, _id: { $in: get_data.id } },
+              { reciverId: get_data.senderId, _id: { $in: get_data.id } },
+            ],
+          });
+             //Find last message
+             let lastMessage = await Models.chatconstant.findOne({
+              $or: [
+                { senderId: get_data.senderId, lastmessage: { $in: get_data.id }},
+                { reciverId: get_data.senderId, lastmessage:{ $in: get_data.id }},
+              ],
+            });
+            if (lastMessage) {
+              //Then find last message
+              let data = await Models.message.findOne(
+                {},
+                {},
+                { sort: { time: -1 } }
+              );
+              //Then store last message in chatConstant
+              await Models.chatconstant.updateOne(
+                { _id: lastMessage._id },
+                { lastmessage: data._id, date: data.date, time: data.time }
+              );
+            }
+        } else {
+          // It's a single ID
+          deleteMessage = await Models.message.deleteOne({
+            $or: [
+              { senderId: get_data.senderId, _id: get_data.id },
+              { reciverId: get_data.senderId, _id: get_data.id },
+            ],
+          });
+          //Find last message
+          let lastMessage = await Models.chatconstant.findOne({
+            $or: [
+              { senderId: get_data.senderId, lastmessage: get_data.id },
+              { reciverId: get_data.senderId, lastmessage: get_data.id },
+            ],
+          });
+          if (lastMessage) {
+            //Then find last message
+            let data = await Models.message.findOne(
+              {},
+              {},
+              { sort: { time: -1 } }
+            );
+            //Then store last message in chatConstant
+            await Models.chatconstant.updateOne(
+              { _id: lastMessage._id },
+              { lastmessage: data._id, date: data.date, time: data.time }
+            );
+          }
+        }
+        // Send success response to the client
+        const success_message = {
+          success_message: "Message deleted successfully",
+        };
+        socket.emit("delete_message_listener", success_message);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    //Message send //Test pass
+    socket.on("send_message", async function (data) {
+      try {
+        let checkChatConstant = await Models.chatconstant.findOne({
+          $or: [
+            { senderId: data.senderId, reciverId: data.reciverId },
+            { senderId: data.reciverId, reciverId: data.senderId },
+          ],
+        });
 
+        if (checkChatConstant) {
+          let saveMsg = await Models.message.create({
+            senderId: data.senderId,
+            reciverId: data.reciverId,
+            message: data.message,
+            message_type: data.message_type,
+            constantId: checkChatConstant.id,
+            date: moment().format("YYYY-MM-DD"),
+            time: moment().format("LTS"),
+          });
+          await Models.chatconstant.updateOne(
+            { _id: checkChatConstant._id },
+            {
+              lastmessage: saveMsg._id,
+              date: moment().format("YYYY-MM-DD"),
+              time: moment().format("LTS"),
+            }
+          );
 
+          let getMsg = await Models.message
+            .findOne({
+              senderId: saveMsg.senderId,
+              reciverId: saveMsg.reciverId,
+              _id: saveMsg._id,
+            })
+            .populate([
+              {
+                path: "senderId",
+                select: "id name profileImage",
+              },
+              {
+                path: "reciverId",
+                select: "id name profileImage",
+              },
+            ]);
 
+            // console.log("getMsg",getMsg)
+            if (getMsg) {
+              getMsg = getMsg.length > 0 ? getMsg[0] : getMsg;
+              const get_socket_id = await Models.socketuser.findOne ({
+                userId: data.reciverId,
+              });
+              let user=await Models.userModel.findOne({
+                _id:data.reciverId
+              })
+              console.log("Inside if",user)
+              if(user&&user.deviceToken){
+                let deviceToken=user.deviceToken;
+                let deviceType=user.deviceType;
+                let sendData={
+                 ...data,
+                  deviceToken,
+                  deviceType
+                }
+               await helper.sendPushToIos(sendData)
+              }
+              if (get_socket_id) {
+                io
+                  .to (get_socket_id.socketId)
+                  .emit ('send_message_emit', getMsg);
+              }
+              
+              socket.emit ('send_message_emit', getMsg);
+            }
+        } else {
+          let createChatConstant = await Models.chatconstant.create({
+            senderId: data.senderId,
+            reciverId: data.reciverId,
+          });
+          let saveMsg = await Models.message.create({
+            senderId: data.senderId,
+            reciverId: data.reciverId,
+            message: data.message,
+            message_type: data.message_type,
+            constantId: createChatConstant._id,
+            date: moment().format("YYYY-MM-DD"),
+            time: moment().format("LTS"),
+          });
 
+          await Models.chatconstant.updateOne(
+            { _id: createChatConstant._id },
+            {
+              lastmessage: saveMsg._id,
+              date: moment().format("YYYY-MM-DD"),
+              time: moment().format("LTS"),
+            }
+          );
 
+          let getMsg = await Models.message
+            .findOne({
+              senderId: data.senderId,
+              reciverId: data.reciverId,
+              _id: saveMsg._id,
+            })
+            .populate([
+              {
+                path: "senderId",
+                select: "id name profileImage",
+              },
+              {
+                path: "reciverId",
+                select: "id name profileImage",
+              },
+            ]);
+          if (getMsg) {
+            getMsg = getMsg.length > 0 ? getMsg[0] : getMsg;
+            const get_socket_id = await Models.socketuser.findOne ({
+              userId: data.reciverId,
+            });
+            if (get_socket_id) {
+              io
+                .to (get_socket_id.socketId)
+                .emit ('send_message_emit', getMsg);
+            }
+            let user=await Models.userModel.findOne({
+              _id:data.receiverId
+            })
+            console.log("INside else",user)
+            if(user&&user.deviceToken){
+              let deviceToken=user.deviceToken;
+              let deviceType=user.deviceType;
+              let sendData={
+               ...data,
+                deviceToken,
+                deviceType
+              }
+              await helper.sendPushToIos(sendData)
+            }
+            socket.emit ('send_message_emit', getMsg);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+    //clear chat //Test pass
+    socket.on("clear_chat", async (get_data) => {
+      try {
+        // Find the message to be clear
+        const getMessage = await Models.message.find({
+          $or: [
+            { senderId: get_data.senderId },
+            { reciverId: get_data.senderId },
+          ],
+          is_delete: { $exists: false },
+        });
+        if (getMessage) {
+          // Update the message's deletedId if it exists
+          await Models.message.updateMany(
+            {
+              $or: [
+                { senderId: get_data.senderId },
+                { reciverId: get_data.senderId },
+              ],
+              is_delete: { $exists: false },
+            },
+            { is_delete: get_data.senderId }
+          );
+        } else {
+          // Delete the message if it doesn't exist or already marked as deleted
+          await Models.message.deleteMany({
+            $or: [
+              { senderId: get_data.senderId },
+              { reciverId: get_data.senderId },
+            ],
+            is_delete: { $ne: get_data.senderId },
+          });
+        }
 
+        // Send success response to the client
+        const success_message = {
+          success_message: "Message clear successfully",
+        };
+        socket.emit("clear_chat_listener", success_message);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    //Block user
+    socket.on("block_user",async(get_data)=>{
+      try {
+        let criteria={
+          senderID:get_data.senderID,
+          reciverId:get_data.reciverId
+        }
+        let objToUpdate={
+          is_block:1
+        }
+        let block=await Models.chatconstant.findOneAndUpdate(criteria,objToUpdate);
+        socket.emit("block_user_listener", block);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    //Report the user
+    socket.on("report_message",async(get_data)=>{
+      try {
+        let objToSave={
+          senderID:get_data.senderID,
+          reciverId:get_data.reciverId,
+          message:get_data.message
+       }
+       let saveData=await Models.ReportModel.create(objToSave);
+       socket.emit("report_message_listener", saveData);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    //Typing and stopTyping  get_data has senderId and receiverId
+    // socket.on("typing", (get_data) => socket.in(get_data).emit("typing"));
+    // socket.on("stopTyping", (get_data) => socket.in(get_data).emit("stopTyping"));
+    // Listen for typing event
+    socket.on('typing', (data) => {
+      const { senderId, receiverId } = data;
+      // Broadcast typing event to the receiver
+      socket.to(receiverId).emit('typing', senderId);
+    });
+     // Listen for stopTyping event
+  socket.on('stopTyping', (data) => {
+    const { senderId, receiverId } = data;
+    // Broadcast stopTyping event to the receiver
+    socket.to(receiverId).emit('stopTyping', senderId);
+  });
+  });
+};
 
-
-
-
+// let data=await Models.message.findOne({}, {}, { sort: { time: -1 } })
+// async function sendMessage() {
+//   try {
+//     const result = await saveMessage(data);
+//     console.log('Message saved:', result);
+//     if(result){
+//       socket.emit("send_message_emit", result);
+//     }
+//   } catch (error) {
+//     console.error('Error saving message:', error);
+//   }
+// }
+// // Call the sendMessage function
+// sendMessage();

@@ -16,16 +16,16 @@ import {
 // import { loginUserPost } from "../axios/APIs.js";
 import APIS from "../axios/Index.js";
 function Loginpage() {
+    const dispatch = useDispatch()
     function Typography({ children }) {
         return <span>{children}</span>;
     }
-    //   const dispatch=useDispatch()
     const loginUser = () => {
         let data = {
             email: "admin@gmail.com",
             password: "1234567"
         }
-        APIS.authLogin(data)
+        dispatch(APIS.authLogin(data))
     }
     const navegate = useNavigate()
     return (

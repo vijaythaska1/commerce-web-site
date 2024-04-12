@@ -8,16 +8,17 @@ import dotenv from 'dotenv';
 import router from "./router/index.js";
 import users from "./router/APIs.js";
 import helper from "./utility/helper.js";
-
+import { Server } from "socket.io";
+import { createServer } from 'node:http';
 dotenv.config({
     path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
 })
 
-// import server from "./cofing/server.config.js"a
-const PORT = process.env.PORTs 
+const PORT = process.env.PORTs
 const catchServerErrors = helper.catchServerError
-
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 app.set('views', path.join(path.resolve(), 'views'));
 app.use(express.json());
 app.use(cors());
@@ -30,7 +31,7 @@ app.use(fileUpload());
 app.use('/', router);
 app.use('/users', users);
 app.use(catchServerErrors);
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 

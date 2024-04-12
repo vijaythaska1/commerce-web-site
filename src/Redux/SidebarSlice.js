@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchData, loginUserPost } from '../axios/APIServices.js';
 import APIS from '../axios/Index.js';
 const initialState = {
   value: 0,
@@ -17,10 +16,16 @@ export const SidebarSlice = createSlice({
       return state
     },
   },
+
   extraReducers: (bulder) => {
-    bulder.addCase(APIS?.authLogin.fulfilled , (state , action) => {
-  
-console.log( action.payload);
+    bulder.addCase(APIS?.authLogin.fulfilled, (state, action) => {
+      state.authUser = action.payload;
+      state.isLogin = true;
+      return state
+    })
+    bulder.addCase(APIS?.authLogin.rejected, (state, action) => {
+      console.log("Failed =======", action.payload);
+
     })
   }
 

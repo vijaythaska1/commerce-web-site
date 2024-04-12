@@ -1,4 +1,4 @@
-import UserModel from "../Model/UserModel.js";
+import Model from "../Model/index.js"
 import dotenv from 'dotenv';
 import helper from "../utility/helper.js";
 import jwt from 'jsonwebtoken';
@@ -16,12 +16,11 @@ export default {
         })
         helper.dataValidator(validationSchema, req?.body)
         const { oldPassword, newPassword, confirmPassword } = req?.body;
-        const data = await UserModel.findOne(req.user._id);
+        const data = await Model.UserModel.findOne(req.user._id);
         const match = await bcrypt.compare(oldPassword, data.password);
-        if (!match) { return helper.failed(res, "Invalid current password"); };
+        if (!match) { return helper.failed(res, "Invalid current password") };
         if (newPassword != confirmPassword) { return helper.failed(res, "New password and confirm password do not match") };
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
         data.password = hashedPassword;
         await data.save();
         helper.success(res, "Password Change successfully", data);
@@ -34,7 +33,7 @@ export default {
         })
         helper.dataValidator(validationSchema, req?.body)
         const { email, password } = req.body;
-        const data = await UserModel.findOne({ email });
+        const data = await Model.UserModel.findOne({ email });
         if (!data) { return helper.failed(res, "Invalid Email") };
         const match = await bcrypt.compare(password, data.password);
         const token = jwt.sign({ id: data._id }, process.env.SECRET_KEY, { expiresIn: '24h' });
@@ -44,9 +43,9 @@ export default {
         return helper.success(res, "login Successfully", data, token);
     }),
 
-    adminprofile:helper.TryCatchHanddler(async(req,res)=>{
-     const data = await UserModel.findOne(req.user._id);
-     helper.success(res, "Profile Get Successfully", data);
+    adminprofile: helper.TryCatchHanddler(async (req, res) => {
+        const data = await UserModel.findOne(req.user._id);
+        helper.success(res, "Profile Get Successfully", data);
     }),
 
 

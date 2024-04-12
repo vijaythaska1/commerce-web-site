@@ -218,7 +218,7 @@ export default {
             if (!token) {
                 return failed(res, "Unauthorized");
             }
-            const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+            const decodedToken =  jwt.verify(token, process.env.SECRET_KEY);
             const isValidUser = await UserModel.findOne({ id: decodedToken._id });
             if (!isValidUser) {
                 return failed(res, "Invalid token");

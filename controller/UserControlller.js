@@ -1,4 +1,4 @@
-import UserModel from "../Model/UserModel.js";
+import Model from "../Model/index.js";
 import helper from "../utility/helper.js";
 import bcrypt from "bcrypt";
 import Joi from "joi";
@@ -23,9 +23,10 @@ export default {
             deviceToken: Joi.string(),
             deviceTypes: Joi.number().integer().valid(0, 1)
         });
+
         helper.dataValidator(validationSchema, req?.body);
         const { role, rollNo, firstName, lastname, email, phoneNumber, department, gender, status, addmessionDate, image, document, password } = req.body;
-        const emailMatch = await UserModel.findOne({ $or: [{ email }, { phoneNumber }] });
+        const emailMatch = await Model.UserModel.findOne({ $or: [{ email }, { phoneNumber }] });
         if (emailMatch) {
             if (emailMatch.email == email && emailMatch.phoneNumber == phoneNumber) {
                 return helper.failed(res, "Email or PhoneNumber already exists");
@@ -36,7 +37,7 @@ export default {
             }
         }
         const hash = await bcrypt.hash(password, 10);
-        const newUser = await UserModel.create({ role, rollNo, firstName, lastname, email, phoneNumber, password: hash, department, status, gender, addmessionDate, image, document, });
+        const newUser = await Model.UserModel.create({ role, rollNo, firstName, lastname, email, phoneNumber, password: hash, department, status, gender, addmessionDate, image, document, });
         return helper.success(res, "User Created Successfully", newUser);
     }),
 }
