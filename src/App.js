@@ -12,7 +12,7 @@ import TermsAndConditions from './pages/CMS/TermsAndConditions.jsx';
 import PrivacyPolicy from './pages/CMS/PrivacyPolicy.jsx';
 import AddStudent from './pages/Student/AddStudent.jsx';
 import StudentView from './pages/Student/StudentView.jsx';
-
+import toast, { Toaster } from 'react-hot-toast';
 
 
 function App() {
@@ -38,7 +38,11 @@ function App() {
           <Route path='/PrivacyPolicy' element={<PrivacyPolicy />} />
 
         </Route>
+
       </Routes>
+      <Toaster
+        position="top-center"
+        reverseOrder={false} />
     </BrowserRouter>
 
 

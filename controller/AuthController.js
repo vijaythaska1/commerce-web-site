@@ -31,7 +31,7 @@ export default {
             email: Joi.string().required(),
             password: Joi.string().required()
         })
-        helper.dataValidator(validationSchema, req?.body)
+        helper.dataValidator(validationSchema, req?.body);
         const { email, password } = req.body;
         const data = await Model.UserModel.findOne({ email });
         if (!data) { return helper.failed(res, "Invalid Email") };

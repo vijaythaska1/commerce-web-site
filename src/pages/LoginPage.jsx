@@ -7,27 +7,42 @@ import {
     CardHeader,
     CardBody,
     CardFooter,
-    Typography,
     Input,
     Checkbox,
     Button,
 } from "@material-tailwind/react";
-// import { loginApi } from "../axios/Index.js";
-// import { loginUserPost } from "../axios/APIs.js";
 import APIS from "../axios/Index.js";
+
 function Loginpage() {
-    const dispatch = useDispatch()
-    function Typography({ children }) {
-        return <span>{children}</span>;
-    }
-    const loginUser = () => {
-        let data = {
-            email: "admin@gmail.com",
-            password: "1234567"
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+    });
+    const dispatch = useDispatch();
+    const navegate = useNavigate();
+
+    const handlelogin = async () => {
+        try {
+            const res = await dispatch(APIS.authLogin(data));
+            if (res.payload.data.success === true) {
+                navegate("/Dashboard")
+            }
+        } catch (error) {
+            console.error(error);
         }
-        dispatch(APIS.authLogin(data))
-    }
-    const navegate = useNavigate()
+    };
+
+    const handleChange = (event) => {
+        setData((prevalue) => {
+            return {
+                ...prevalue,
+                [event.target.name]: event.target.value
+            }
+        })
+    };
+    function Typography({ children }) {
+        return <span>{children}</span>
+    };
     return (
         <section
             className="w-full h-screen flex items-center justify-center"
@@ -46,11 +61,12 @@ function Loginpage() {
                 <CardBody className="flex flex-col gap-4">
                     <Input
                         label="Email"
-                        required
                         name="email"
+                        value={data?.email}
+                        onChange={handleChange}
                         size="lg"
                         type="email"
-                        autoComplete="username"
+                        required
                     />
                     <div>
                         <Typography variant="small" color="red">
@@ -60,27 +76,27 @@ function Loginpage() {
                         <Input
                             label="Password"
                             name="password"
+                            value={data?.password}
+                            onChange={handleChange}
                             size="lg"
                             required
-                            autoComplete="current-password"
                         />
                     </div>
                     <Typography variant="small" color="red" style={{ display: "flex" }}>
-
                     </Typography>
                     <div className="-ml-2.5">
                         <Checkbox label="Remember Me" />
                     </div>
                 </CardBody>
                 <CardFooter className="pt-0">
-                    <Button onClick={loginUser} variant="gradient" fullWidth>
+                    <Button onClick={handlelogin} variant="gradient" fullWidth>
                         Sign In
                     </Button>
                     <Typography variant="small" className="mt-6 flex justify-center">
                         Don&apos;t have an account?
                         <Link
                             as="a"
-                            onClick={loginUser}
+
                             // to={"/Dashboard"}
                             variant="small"
                             color="blue-gray"
