@@ -17,9 +17,7 @@ import {
   Square3Stack3DIcon,
   ChevronDownIcon,
   Cog6ToothIcon,
-  InboxArrowDownIcon,
-  LifebuoyIcon,
-  PowerIcon,
+  PowerIcon,  
   RocketLaunchIcon,
   Bars2Icon,
 } from "@heroicons/react/24/solid";

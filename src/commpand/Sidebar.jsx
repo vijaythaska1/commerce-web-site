@@ -8,7 +8,6 @@ import {
   Accordion,
   AccordionHeader,
   AccordionBody,
-
 } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
