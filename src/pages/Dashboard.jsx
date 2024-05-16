@@ -8,7 +8,6 @@ import {
 import Chart from "react-apexcharts";
 import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
 
-
 const CardUI = ({ color, count, title }) => {
     return (
         <div className="flex items-center bg-white border rounded-md overflow-hidden shadow-md py-4 cursor-pointer">
@@ -41,6 +40,7 @@ const CardUI = ({ color, count, title }) => {
         </div>
     )
 }
+
 const Dashboard = () => {
     const chartConfig = {
         type: "bar",
@@ -242,18 +242,19 @@ const Dashboard = () => {
             },
         },
     };
+
     return (
         <>
             <div className='w-full h-auto'>
-                <div className='w-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 grid-rows-1 gap-4'>
+                <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
                     <CardUI color="bg-cyan-300" title="Total Member" count={5241} />
                     <CardUI color="bg-green-300" title="Total Orders" count={5241} />
                     <CardUI color="bg-blue-300" title="Total Transaction" count={5241} />
                     <CardUI color="bg-yellow-300" title="Total Revnue" count={5241} />
                 </div>
             </div>
-            <div className='flex mt-8'>
-                <Card className='w-3/4'>
+            <div className='flex flex-col md:flex-row mt-8'>
+                <Card className='w-full md:w-3/4 mb-4 md:mb-0'>
                     <CardHeader
                         floated={false}
                         shadow={false}
@@ -282,7 +283,7 @@ const Dashboard = () => {
                     </CardBody>
                 </Card>
 
-                <Card className='w-1/3 ml-5'>
+                <Card className='w-full md:w-1/3 md:ml-5'>
                     <CardHeader
                         floated={false}
                         shadow={false}
@@ -312,8 +313,6 @@ const Dashboard = () => {
                 </Card>
             </div>
 
-
-
             <Card className='mt-8'>
                 <CardHeader
                     floated={false}
@@ -342,10 +341,7 @@ const Dashboard = () => {
                     <Chart {...chartConfigs} />
                 </CardBody>
             </Card>
-
-
         </>
-
     );
 }
 
