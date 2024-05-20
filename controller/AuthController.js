@@ -14,7 +14,7 @@ export default {
             newPassword: Joi.string().min(6).alphanum().required(),
             confirmPassword: Joi.string().required()
         })
-        helper.dataValidator(validationSchema, req?.body)
+        helper.dataValidator(validationSchema, req?.body);
         const { oldPassword, newPassword, confirmPassword } = req?.body;
         const data = await Model.UserModel.findOne(req.user._id);
         const match = await bcrypt.compare(oldPassword, data.password);

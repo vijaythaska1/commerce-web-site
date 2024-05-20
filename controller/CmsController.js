@@ -1,15 +1,30 @@
-import helper from "../utility/helper";
-import Model from "../Model/index.js"
-
-export default {
-    CMSGet: helper.TryCatchHanddler(async (req, res) => {
-        const type = req.query.types;
-        const data = await Model.CmsModel.find({ type })
-        helper.success(res, "Cms Get Succesfully", data);
-    }),
-    CmsUpdate: helper.TryCatchHanddler(async (req, res) => {
-        const type = req.query.types;
-        const data = await Model.CmsModel.update({ type }, { new: true });
-        helper.success(res, "Cms Update Successfully", data);
-    }),
+function Checking(amount) {
+  this.balance = amount;
+  this.deposit = deposit;
+  this.withdraw = withdraw;
+  this.toString = toString;
 }
+
+function deposit(amount) {
+  this.balance += amount;
+}
+
+function withdraw(amount) {
+  if (amount <= this.balance) {
+    this.balance -= amount;
+  } else {
+    console.log("Insufficient funds");
+  }
+}
+
+function toString() {
+  return "Balance: " + this.balance;
+}
+
+var account = new Checking(500);
+account.deposit(1000);
+console.log(account.toString()); 
+account.withdraw(750);
+console.log(account.toString());
+account.withdraw(800); 
+console.log(account.toString());
