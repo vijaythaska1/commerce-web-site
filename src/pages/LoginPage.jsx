@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import image from "../assets/fall-zoom-5.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
+import Joi from 'joi';
 import {
     Card,
     CardHeader,
@@ -9,28 +10,53 @@ import {
     CardFooter,
     Input,
     Checkbox,
+    Typography,
     Button,
 } from "@material-tailwind/react";
 import APIS from "../axios/Index.js";
+import { LOGIN_SUCCESS } from "../Redux/SidebarSlice.js";
 
 function Loginpage() {
-    const [data, setData] = useState({
-        email: "",
-        password: "",
-    });
+    const [data, setData] = useState({});
+    const [errors, setErrors] = useState({});
+    const [eye, setEye] = useState(0);
     const dispatch = useDispatch();
     const navegate = useNavigate();
 
+    const validateForm = () => {
+        const validationSchema = Joi.object({
+            email: Joi.string().email({ tlds: { allow: false } }).required(),
+            password: Joi.string().min(6).required("Invalid password"),
+        });
+        const { error } = validationSchema.validate(data, { abortEarly: false });
+        if (error) {
+            const newErrors = {};
+            error.details.map((detail) => {
+                newErrors[detail.path[0]] = detail.message;
+            });
+            setErrors(newErrors);
+            return false;
+        }
+        return true;
+    };
+
     const handlelogin = async () => {
         try {
+            if (!validateForm()) return;
             const res = await dispatch(APIS.authLogin(data));
             if (res.payload.data.success === true) {
-                navegate("/Dashboard")
+                navegate("/Dashboard");
+                console.log(res)
+                dispatch(LOGIN_SUCCESS(res?.data))
+                localStorage.setItem('adminProfile', JSON.stringify(res.data));
             }
         } catch (error) {
             console.error(error);
         }
     };
+    const handeleye = () => {
+        setEye(eye == 1 ? 0 : 1)
+    }
 
     const handleChange = (event) => {
         setData((prevalue) => {
@@ -40,9 +66,7 @@ function Loginpage() {
             }
         })
     };
-    function Typography({ children }) {
-        return <span>{children}</span>
-    };
+
     return (
         <section
             className="w-full h-screen flex items-center justify-center"
@@ -62,27 +86,35 @@ function Loginpage() {
                     <Input
                         label="Email"
                         name="email"
-                        value={data?.email}
+                        value={data.email}
                         onChange={handleChange}
                         size="lg"
                         type="email"
                         required
+                        error={errors.email}
                     />
                     <div>
-                        <Typography variant="small" color="red">
+                        <Typography variant="small" color="red" >
+                            {errors.email}
                         </Typography>
                     </div>
-                    <div className="relative">
+                    <div className="relative flex">
                         <Input
                             label="Password"
                             name="password"
-                            value={data?.password}
+                            value={data.password}
                             onChange={handleChange}
                             size="lg"
                             required
+                            type={eye == 0 ? "password" : "text"}
+                            error={errors.password}
                         />
+                        <span class="material-symbols-outlined flex absolute left-[90%] top-[9px]" onClick={handeleye}>
+                            {eye == 1 ? "visibility" : "visibility_off"}
+                        </span>
                     </div>
                     <Typography variant="small" color="red" style={{ display: "flex" }}>
+                        {errors.password}
                     </Typography>
                     <div className="-ml-2.5">
                         <Checkbox label="Remember Me" />
@@ -96,8 +128,6 @@ function Loginpage() {
                         Don&apos;t have an account?
                         <Link
                             as="a"
-
-                            // to={"/Dashboard"}
                             variant="small"
                             color="blue-gray"
                             className="ml-1 font-bold"
