@@ -21,6 +21,7 @@ import {
   RocketLaunchIcon,
   Bars2Icon,
 } from "@heroicons/react/24/solid";
+import { useMediaQuery } from 'react-responsive';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { togglesidebar } from "../Redux/SidebarSlice";
@@ -53,9 +54,7 @@ const profileMenuItems = [
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
   const closeMenu = () => setIsMenuOpen(false);
-
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
@@ -193,17 +192,21 @@ function NavListMenu() {
 export function Navbars() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
+  const isSmallScreen = useMediaQuery({ maxWidth: 960 });
 
-  const dispatch = useDispatch(togglesidebar)
-  const value = useSelector(store => store).sidebar.value
+  const dispatch = useDispatch(togglesidebar);
+  const value = useSelector(store => store).sidebar.value;
 
+  React.useEffect(() => {
+    setIsNavOpen(isSmallScreen);
+  }, [isSmallScreen]);
 
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setIsNavOpen(false),
+      () => !isSmallScreen && setIsNavOpen(false),
     );
-  }, []);
+  }, [isSmallScreen]);
 
   return (
     <Navbar className="rounded-none lg:pl-6">

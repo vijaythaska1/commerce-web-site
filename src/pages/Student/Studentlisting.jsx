@@ -2,7 +2,7 @@ import {
     MagnifyingGlassIcon,
     ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon, eye } from "@heroicons/react/24/solid";
+import { PencilIcon, UserPlusIcon, EyeIcon } from "@heroicons/react/24/solid";
 import {
     Card,
     CardHeader,
@@ -36,7 +36,7 @@ const TABS = [
     },
 ];
 
-const TABLE_HEAD = ["Member", "Function", "Status", "Employed", ""];
+const TABLE_HEAD = ["Member", "Function", "Status", "Employed", "Actions"];
 
 const TABLE_ROWS = [
     {
@@ -89,7 +89,7 @@ const TABLE_ROWS = [
 function Studentlisting() {
     const navegate = useNavigate()
     return (
-        <Card className="w-full overflow:hidden">
+        <Card className="w-full overflow-hidden">
             <CardBody className="px-0">
                 <CardHeader floated={false} shadow={false} className="rounded-none">
                     <div className="mb-8 flex items-center justify-between gap-8">
@@ -127,7 +127,8 @@ function Studentlisting() {
                     </div>
                 </CardHeader>
 
-                <table className="mt-4 w-full min-w-max table-auto text-left">
+                <div className="overflow-x-auto">
+                    <table className="w-full table-auto text-left">
                     <thead>
                         <tr>
                             {TABLE_HEAD.map((head, index) => (
@@ -247,6 +248,7 @@ function Studentlisting() {
                         )}
                     </tbody>
                 </table>
+                </div>
             </CardBody>
             <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
                 <Typography variant="small" color="blue-gray" className="font-normal">

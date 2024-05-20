@@ -16,7 +16,7 @@ function AddStudent() {
     const [country, setCountry] = useState(0);
     const { name, flags, countryCallingCode } = countries[country];
     return (
-        <Card className="min-h-min p-3">
+        <Card className="min-h-min p-3 mx-auto max-w-screen-lg text-balance">
             <Typography variant="h4" color="gray" className="mb-2 mt-3 ml-4">
                 Add Student
             </Typography>
@@ -42,7 +42,7 @@ function AddStudent() {
                 </label>
             </div>
 
-            <div className="grid grid-cols-2 gap-10 ml-9 mr-9 mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 ml-9 mr-9 mt-10">
                 <Input variant="outlined" label="NAME" placeholder="Enter Name" />
                 <Input variant="outlined" label="Standard" placeholder="Standard" />
                 <Input variant="outlined" label="Standard" placeholder="Standard" />
@@ -102,7 +102,7 @@ function AddStudent() {
                 </div>
                 <Input variant="outlined" label="Standard" placeholder="Standard" />
             </div>
-            <div className="flex items-center justify-center  mt-10 mr-10 ml-10">
+            <div className="flex items-center justify-center mt-10 mx-9">
                 <label
                     htmlFor="dropzone-file"
                     className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -134,13 +134,11 @@ function AddStudent() {
                 </label>
             </div>
 
-
-            <div className="flex mr-9 justify-end mt-10">
+            <div className="flex justify-end mt-10 mr-9">
                 <Button loading={true}>Submit</Button>
             </div>
-
         </Card>
     )
 }
 
-export default AddStudent
+export default AddStudent;

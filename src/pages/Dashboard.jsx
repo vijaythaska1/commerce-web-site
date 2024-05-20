@@ -10,7 +10,7 @@ import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
 
 const CardUI = ({ color, count, title }) => {
     return (
-        <div className="flex items-center bg-white border rounded-md overflow-hidden shadow-md py-4 cursor-pointer">
+        <div className="flex items-center bg-white border rounded-md overflow-hidden shadow-md py-4 cursor-pointer w-full md:w-auto">
             <div className='flex items-center justify-center p-2'>
                 <div className={`p-4 ${color} rounded-full`}>
                     <svg
@@ -29,7 +29,7 @@ const CardUI = ({ color, count, title }) => {
                     </svg>
                 </div>
             </div>
-            <div className="px-4 text-gray-500">
+            <div className="px-4 text-gray-500 flex-grow">
                 <p className="text-3xl text-gray-900">
                     {count}
                 </p>
@@ -246,7 +246,7 @@ const Dashboard = () => {
     return (
         <>
             <div className='w-full h-auto'>
-                <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+                <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                     <CardUI color="bg-cyan-300" title="Total Member" count={5241} />
                     <CardUI color="bg-green-300" title="Total Orders" count={5241} />
                     <CardUI color="bg-blue-300" title="Total Transaction" count={5241} />
