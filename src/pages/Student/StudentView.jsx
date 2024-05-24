@@ -10,7 +10,7 @@ import {
 function StudentView() {
     return (
         <>
-            <Card className="p-6 max-w-screen-lg mx-auto">
+            <Card className="p-6 ">
                 <Typography variant="h4" color="gray" className="mb-4">
                     Student Details
                 </Typography>
@@ -63,7 +63,7 @@ function StudentView() {
                     <div className="col-span-1 lg:col-span-2">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <Typography color="gray" className="font-normal mb-2">
+                                <Typography variant="h4" color="blue-gray" className="font-normal mb-2 text-lg">
                                     Name
                                 </Typography>
                                 <Typography color="gray" className="font-normal">
@@ -71,7 +71,7 @@ function StudentView() {
                                 </Typography>
                             </div>
                             <div>
-                                <Typography color="gray" className="font-normal mb-2">
+                                <Typography variant="h4" color="blue-gray" className="font-normal mb-2 text-lg">
                                     Email
                                 </Typography>
                                 <Typography color="gray" className="font-normal">
@@ -79,7 +79,7 @@ function StudentView() {
                                 </Typography>
                             </div>
                             <div>
-                                <Typography color="gray" className="font-normal mb-2">
+                                <Typography variant="h4" color="blue-gray" className="font-normal mb-2 text-lg">
                                     Phone
                                 </Typography>
                                 <Typography color="gray" className="font-normal">

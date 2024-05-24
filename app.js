@@ -29,7 +29,7 @@ app.use(fileUpload());
 // dotenv.config(ENVPATH);
 // await server();
 app.use('/', router);
-app.use('/users', users);
+app.use('/api', users);
 app.use(catchServerErrors);
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

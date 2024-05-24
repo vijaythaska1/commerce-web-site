@@ -16,7 +16,7 @@ function AddStudent() {
     const [country, setCountry] = useState(0);
     const { name, flags, countryCallingCode } = countries[country];
     return (
-        <Card className="min-h-min p-3 mx-auto max-w-screen-lg text-balance">
+        <Card className="min-h-min p-3 text-balance">
             <Typography variant="h4" color="gray" className="mb-2 mt-3 ml-4">
                 Add Student
             </Typography>
@@ -41,7 +41,6 @@ function AddStudent() {
                     />
                 </label>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 ml-9 mr-9 mt-10">
                 <Input variant="outlined" label="NAME" placeholder="Enter Name" />
                 <Input variant="outlined" label="Standard" placeholder="Standard" />

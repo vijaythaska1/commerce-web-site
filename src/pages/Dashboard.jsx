@@ -242,7 +242,6 @@ const Dashboard = () => {
             },
         },
     };
-
     return (
         <>
             <div className='w-full h-auto'>

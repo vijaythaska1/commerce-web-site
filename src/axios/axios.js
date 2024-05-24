@@ -9,5 +9,6 @@ export const http = axios.create({
         PUBLISH_KEY: process.env.REACT_APP_PUBLISH_KEY,
         Authorization: 'Bearer ' + token
     }
-})
+});
+console.log(http);
 

@@ -23,23 +23,23 @@ export const SidebarSlice = createSlice({
       state.authUser = action.payload;
       state.isLogin = true;
       return state
-    })
+    });
     bulder.addCase(APIS?.authLogin.rejected, (state, action) => {
-      console.log("Failed =======", action.payload);
+      console.log("Failed =======>", action.payload);
 
-    })
+    });
   },
 
   LOGIN_SUCCESS: (state, action) => {
-    console.log(action.payload,'===========================12')
+    console.log(action.payload, '===========================12')
     return {
       ...state, authUser: action.payload
     }
   }
 
-})
+});
 
 
-export const { togglesidebar,LOGIN_SUCCESS } = SidebarSlice.actions
+export const { togglesidebar, LOGIN_SUCCESS } = SidebarSlice.actions
 
 export default SidebarSlice.reducer

@@ -82,7 +82,7 @@ export default {
 
                 return {
                     success: true,
-                    fileUrl: `${process?.env?.VITE_BASE_URL}/${fileBasePath}`
+                    fileUrl: `${process?.env?.REACT_APP_PUBLIC_URL}/${fileBasePath}`
                 };
 
             }));
@@ -218,7 +218,7 @@ export default {
             if (!token) {
                 return failed(res, "Unauthorized");
             }
-            const decodedToken =  jwt.verify(token, process.env.SECRET_KEY);
+            const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
             const isValidUser = await UserModel.findOne({ id: decodedToken._id });
             if (!isValidUser) {
                 return failed(res, "Invalid token");

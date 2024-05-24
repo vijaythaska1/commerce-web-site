@@ -1,30 +1,17 @@
-function Checking(amount) {
-  this.balance = amount;
-  this.deposit = deposit;
-  this.withdraw = withdraw;
-  this.toString = toString;
-}
+import Model from "../Model/index";
+import helper from "../utility/helper";
 
-function deposit(amount) {
-  this.balance += amount;
-}
+export default {
+  CmsGet: helper.AsyncHanddle(async (req, res) => {
+    const type = req.quary.type;
+    const data = await Model.CmsModel.findOne({ type });
+    helper.success(res, "Cms Get Successfully", data)
+  }),
 
-function withdraw(amount) {
-  if (amount <= this.balance) {
-    this.balance -= amount;
-  } else {
-    console.log("Insufficient funds");
-  }
+  CmsUpdate: helper.AsyncHanddle(async (req, res) => {
+    const { content } = req.body;
+    const type = req.quary.type;
+    const data = await Model.CmsModel.updateOne({ type }, { content }, { new: true });
+    helper.success(res, "CmsUpate Successfully", data);
+  })
 }
-
-function toString() {
-  return "Balance: " + this.balance;
-}
-
-var account = new Checking(500);
-account.deposit(1000);
-console.log(account.toString()); 
-account.withdraw(750);
-console.log(account.toString());
-account.withdraw(800); 
-console.log(account.toString());
