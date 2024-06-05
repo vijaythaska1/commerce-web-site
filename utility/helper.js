@@ -197,8 +197,8 @@ export default {
         try {
             const SECRET_KEY = req.headers['secret_key'];
             const PUBLISH_KEY = req.headers['publish_key'];
-            if (process.env.SECRET_KEY === SECRET_KEY &&
-                process.env.PUBLISH_KEY === PUBLISH_KEY) {
+            if (process.env.SECRET_KEY == SECRET_KEY &&
+                process.env.PUBLISH_KEY == PUBLISH_KEY) {
                 next()
             } else {
                 return res.status(404).send({

@@ -5,9 +5,7 @@ import { http } from "./axios.js"
 const APIServices = {};
 APIServices.adminLogin = async (body) => {
     try {
-        console.log("🚀 ~ http:", http)
         const res = await http.post('/login', body);
-        console.log("🚀 ~ APIServices.adminLogin= ~ res:", res)
         toast.success(res.data.message);
         return res
     } catch (err) {
@@ -15,6 +13,23 @@ APIServices.adminLogin = async (body) => {
         toast.error(err.response.data.message);
         throw err
     }
+};
+
+APIServices.ProfilGet = async () => {
+    try {
+        const res = await http.get('/UserProfile');
+        return res
+    } catch (err) {
+        console.log('API call failed :-', err);
+        toast.error(err.response.data.message);
+        throw err
+    }
 }
+
+
+
+
 export default APIServices;
+
+
 

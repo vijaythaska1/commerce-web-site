@@ -1,3 +1,4 @@
+'use strict';
 import {
     Card,
     Input,
@@ -37,7 +38,7 @@ function AddStudent() {
                                     file:rounded-full file:border-0
                                     file:text-sm file:font-semibold
                                     file:bg-violet-50 file:text-violet-700
-                                 hover:file:bg-violet-100"
+                                    hover:file:bg-violet-100"
                     />
                 </label>
             </div>

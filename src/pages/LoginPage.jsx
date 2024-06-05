@@ -31,7 +31,7 @@ function Loginpage() {
         const { error } = validationSchema.validate(data, { abortEarly: false });
         if (error) {
             const newErrors = {};
-            error.details.map((detail) => {
+            error.details?.forEach((detail) => {
                 newErrors[detail.path[0]] = detail.message;
             });
             setErrors(newErrors);
@@ -46,7 +46,6 @@ function Loginpage() {
             const res = await dispatch(APIS.authLogin(data));
             if (res.payload.data.success === true) {
                 navegate("/Dashboard");
-                console.log(res)
                 dispatch(LOGIN_SUCCESS(res?.data))
                 localStorage.setItem('adminProfile', JSON.stringify(res.data));
             }
@@ -55,7 +54,7 @@ function Loginpage() {
         }
     };
     const handeleye = () => {
-        setEye(eye == 1 ? 0 : 1)
+        setEye(eye === 1 ? 0 : 1)
     }
 
     const handleChange = (event) => {
@@ -73,69 +72,71 @@ function Loginpage() {
             style={{ backgroundImage: `url("${image}")` }}
         >
             <Card className="w-96 display: flex justify-self-center">
-                <CardHeader
-                    variant="gradient"
-                    color="gray"
-                    className="mb-4 grid h-28 place-items-center"
-                >
-                    <Typography variant="h3" color="white">
-                        Sign In
-                    </Typography>
-                </CardHeader>
-                <CardBody className="flex flex-col gap-4">
-                    <Input
-                        label="Email"
-                        name="email"
-                        value={data.email}
-                        onChange={handleChange}
-                        size="lg"
-                        type="email"
-                        required
-                        error={errors.email}
-                    />
-                    <div>
-                        <Typography variant="small" color="red" >
-                            {errors.email}
+                <form>
+                    <CardHeader
+                        variant="gradient"
+                        color="gray"
+                        className="mb-4 grid h-28 place-items-center"
+                    >
+                        <Typography variant="h3" color="white">
+                            Sign In
                         </Typography>
-                    </div>
-                    <div className="relative flex">
+                    </CardHeader>
+                    <CardBody className="flex flex-col gap-4">
                         <Input
-                            label="Password"
-                            name="password"
-                            value={data.password}
-                            onChange={handleChange}
+                            label="Email"
+                            name="email"
+                            type="email"
                             size="lg"
-                            required
-                            type={eye == 0 ? "password" : "text"}
-                            error={errors.password}
+                            autoComplete="username"
+                            value={data.email}
+                            onChange={handleChange}
+                            error={errors.email}
                         />
-                        <span class="material-symbols-outlined flex absolute left-[90%] top-[9px]" onClick={handeleye}>
-                            {eye == 1 ? "visibility" : "visibility_off"}
-                        </span>
-                    </div>
-                    <Typography variant="small" color="red" style={{ display: "flex" }}>
-                        {errors.password}
-                    </Typography>
-                    <div className="-ml-2.5">
-                        <Checkbox label="Remember Me" />
-                    </div>
-                </CardBody>
-                <CardFooter className="pt-0">
-                    <Button onClick={handlelogin} variant="gradient" fullWidth>
-                        Sign In
-                    </Button>
-                    <Typography variant="small" className="mt-6 flex justify-center">
-                        Don&apos;t have an account?
-                        <Link
-                            as="a"
-                            variant="small"
-                            color="blue-gray"
-                            className="ml-1 font-bold"
-                        >
-                            Sign up
-                        </Link>
-                    </Typography>
-                </CardFooter>
+                        <div>
+                            <Typography variant="small" color="red" >
+                                {errors.email || ""}
+                            </Typography>
+                        </div>
+                        <div className="relative flex">
+                            <Input
+                                label="Password"
+                                name="password"
+                                size="lg"
+                                type={eye === 0 ? "password" : "text"}
+                                autoComplete="current-password"
+                                value={data.password}
+                                onChange={handleChange}
+                                error={errors.password}
+                            />
+                            <span className="material-symbols-outlined flex absolute left-[90%] top-[9px]" onClick={handeleye}>
+                                {eye === 1 ? "visibility" : "visibility_off"}
+                            </span>
+                        </div>
+                        <Typography variant="small" color="red">
+                            {errors?.password || ""}
+                        </Typography>
+                        <div className="-ml-2.5">
+                            <Checkbox label="Remember Me" />
+                        </div>
+                    </CardBody>
+                    <CardFooter className="pt-0">
+                        <Button onClick={handlelogin} variant="gradient" fullWidth>
+                            Sign In
+                        </Button>
+                        <Typography variant="small" className="mt-6 flex justify-center">
+                            Don&apos;t have an account?
+                            <Link
+                                as="a"
+                                variant="small"
+                                color="blue-gray"
+                                className="ml-1 font-bold"
+                            >
+                                Sign up
+                            </Link>
+                        </Typography>
+                    </CardFooter>
+                </form>
             </Card>
         </section>
     );

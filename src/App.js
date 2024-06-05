@@ -22,16 +22,13 @@ function App() {
         <Route path='/' element={<Loginpage />} />
         <Route element={<Layout />}>
           <Route path='/Dashboard' element={<Dashboard />} />
-
           {/* Admin */}
           <Route path='/profile' element={<Profile />} />
           <Route path='/ChangePassword' element={<ChangePassword />} />
-
           {/* Student */}
           <Route path='/Studentlisting' element={<Studentlisting />} />
           <Route path='/AddStudent' element={<AddStudent />} />
           <Route path='/StudentView' element={<StudentView />} />
-
           {/* CMS */}
           <Route path='/AboutsUS' element={<AboutsUS />} />
           <Route path='/TermsAndConditions' element={<TermsAndConditions />} />

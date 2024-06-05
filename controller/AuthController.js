@@ -16,7 +16,7 @@ export default {
         });
         helper.dataValidator(validationSchema, req?.body);
         const { oldPassword, newPassword } = req?.body;
-        const { id } = req.user; // Directly accessing id from req.user
+        const { id } = req.user;
         const user = await Model.UserModel.findById(id);
         const match = await bcrypt.compare(oldPassword, user.password);
         if (!match) {

@@ -40,7 +40,7 @@ export default {
             registrationNo,
             department,
             gender,
-            image,  
+            image,
             password,
         } = req.body;
         const emailMatch = await Model.UserModel.findOne({
@@ -55,7 +55,7 @@ export default {
                 return helper.failed(res, "Phone number already exists");
             }
         };
-       const  parseddocuments = (req.body.documents?.includes(",") ? req.body.documents.split(',').map(id => id.trim()) : [req.body.documents]);
+        const parseddocuments = (req.body.documents?.includes(",") ? req.body.documents.split(',').map(id => id.trim()) : [req.body.documents]);
         const hash = await bcrypt.hash(password, 10);
         const newUser = await Model.UserModel.create({
             role,
@@ -70,7 +70,7 @@ export default {
             department,
             gender,
             image,
-            documents:parseddocuments,
+            documents: parseddocuments,
         });
         return helper.success(res, "User Created Successfully", newUser);
     }),
