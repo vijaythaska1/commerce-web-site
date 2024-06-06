@@ -4,5 +4,4 @@ const APIS = {};
 APIS.authLogin = createAsyncThunk('auth/login', APIServices?.adminLogin);
 APIS.profileGet = createAsyncThunk('auth/UserProfile', APIServices?.ProfilGet);
 
-
 export default APIS;

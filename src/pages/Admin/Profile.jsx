@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
     Card,
     CardHeader,
@@ -7,10 +8,23 @@ import {
     CardFooter,
 } from "@material-tailwind/react";
 import { useMediaQuery } from 'react-responsive';
+import { useSelector, useDispatch } from 'react-redux';
+import { GET_USER_PROFILE } from "../../Redux/UserAuthSlice";
+
 
 function Profile() {
     const isSmallScreen = useMediaQuery({ maxWidth: 768 });
     const isTablet = useMediaQuery({ minWidth: 769, maxWidth: 1024 });
+
+    const dispatch = useDispatch();
+    const { getuser } = useSelector((state) => state.getProfile);
+    console.log(getuser,"getuserll")
+
+
+    useEffect(() => {
+        const data = dispatch(GET_USER_PROFILE());
+        console.log("🚀 ~ useEffect ~ data:", data)
+    }, [dispatch]);
 
     return (
         <div className="container mx-auto">
@@ -43,10 +57,10 @@ function Profile() {
                 </div>
                 <div className={`grid ${isSmallScreen || isTablet ? "grid-cols-1" : "grid-cols-4"} gap-4 mt-8 w-full p-4`}>
                     <Card className={`w-full ${isSmallScreen || isTablet ? "" : "col-span-1"} shadow-none`}>
-                            <CardHeader floated={false} className="h-48 w-48 rounded-full mx-auto md:mx-0 md:ml-4 ">
-                                <img src="https://docs.material-tailwind.com/img/team-3.jpg" alt="profile-picture" />
-                            </CardHeader>
-                      
+                        <CardHeader floated={false} className="h-48 w-48 rounded-full mx-auto md:mx-0 md:ml-4 ">
+                            <img src="https://docs.material-tailwind.com/img/team-3.jpg" alt="profile-picture" />
+                        </CardHeader>
+
                         <CardBody className="text-center md:text-left md:pl-4 md:ml-12 ">
                             <Typography variant="h4" color="blue-gray" className="mb-2 text-lg">
                                 Vijay Sharma

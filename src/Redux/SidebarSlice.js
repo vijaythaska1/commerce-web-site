@@ -18,24 +18,25 @@ export const SidebarSlice = createSlice({
   },
 
 
-  extraReducers: (bulder) => {
-    bulder.addCase(APIS?.authLogin.fulfilled, (state, action) => {
-      state.authUser = action.payload;
-      state.isLogin = true;
-      return state
-    });
-    bulder.addCase(APIS?.authLogin.rejected, (state, action) => {
-      console.log("Failed =======>", action.payload);
+  // extraReducers: (bulder) => {
+  //   bulder.addCase(APIS?.authLogin.fulfilled, (state, action) => {
+  //     state.authUser = action.payload;
+  //     state.isLogin = true;
+  //     return state
+  //   });
 
-    });
-  },
+  //   bulder.addCase(APIS?.authLogin.rejected, (state, action) => {
+  //     console.log("Failed =======>", action.payload);
 
-  LOGIN_SUCCESS: (state, action) => {
-    console.log(action.payload, '===========================12')
-    return {
-      ...state, authUser: action.payload
-    }
-  }
+  //   });
+  // },
+
+  // LOGIN_SUCCESS: (state, action) => {
+  //   console.log(action.payload, '===========================12')
+  //   return {
+  //     ...state, authUser: action.payload
+  //   }
+  // }
 
 });
 

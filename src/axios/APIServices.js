@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
 import { http } from "./axios.js"
 
-
 const APIServices = {};
 APIServices.adminLogin = async (body) => {
     try {
