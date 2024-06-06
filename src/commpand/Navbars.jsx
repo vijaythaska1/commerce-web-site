@@ -17,7 +17,7 @@ import {
   Square3Stack3DIcon,
   ChevronDownIcon,
   Cog6ToothIcon,
-  PowerIcon,  
+  PowerIcon,
   RocketLaunchIcon,
   Bars2Icon,
 } from "@heroicons/react/24/solid";
@@ -215,7 +215,7 @@ export function Navbars() {
           onClick={() => dispatch(togglesidebar())}
         >
           menu
-        </span> 
+        </span>
         <Typography
           as="a"
           href="#"

@@ -19,30 +19,21 @@ import {
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/sidebarimage.png"
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux'
-import { togglesidebar } from "../Redux/SidebarSlice";
+import { useSelector } from 'react-redux'
+
 
 export function Sidebar() {
   const [open, setOpen] = React.useState(0);
   const sidebar = useSelector(store => store?.sidebar?.value);
-  const dispatch = useDispatch();
   const sidebarvalue = useSelector(state => state.sidebar.value);
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
-  const sidebaropen = () => {
-    dispatch(togglesidebar())
-  };
 
   return (
     <>
-      <Card className={`h-full ${sidebarvalue === 0 ? `w-full` : `hidden`} max-w-[20rem] p-4 shadow-xl transition-all duration-300 ease-in-out`}>
+      <Card className={`h-full ${sidebarvalue === 0 ? `w-full` : `hidden`} max-w-[20rem] p-4 shadow-xl transition-all duration-300 ease-in-out hidden  min-[369px]:block`}>
         <div className={`flex ${sidebar === 0 ? "justify-end" : "justify-center mb-3"} relative top-1`}>
-          {/* <span class="material-symbols-outlined"
-            onClick={sidebaropen}
-          >
-            menu
-          </span> */}
         </div>
         <div className="mb-2 flex justify-center">
           <Typography variant="h5" color="blue-gray">
@@ -55,7 +46,6 @@ export function Sidebar() {
         </div>
 
         <List className="overflow-auto">
-
           <Accordion className={`${sidebar === 0 ? `w-full` : `w-10`} justify-center`}>
             <Link to={"/Dashboard"}>
               <ListItem >
@@ -63,7 +53,6 @@ export function Sidebar() {
                   <InboxIcon className="h-5" />
                 </ListItemPrefix>
                 {`${sidebar === 0 ? "Dashboard" : ""}`}
-
               </ListItem>
             </Link>
 

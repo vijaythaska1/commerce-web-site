@@ -19,7 +19,7 @@ function StudentView() {
                         <CardHeader floated={false} className="h-48 w-48 rounded-full">
                             <img src="https://docs.material-tailwind.com/img/team-3.jpg" alt="profile-picture" className="h-full w-full object-cover rounded-full" />
                         </CardHeader>
-                        <CardBody className="text-center">
+                        <CardBody className="text-center ">
                             <Typography variant="h4" color="blue-gray" className="mb-2">
                                 Vijay Sharma
                             </Typography>
@@ -27,6 +27,7 @@ function StudentView() {
                                 BCA III Sem
                             </Typography>
                         </CardBody>
+
                         <CardFooter className="flex justify-center gap-4">
                             <Tooltip content="Like">
                                 <Typography
@@ -60,7 +61,7 @@ function StudentView() {
                             </Tooltip>
                         </CardFooter>
                     </Card>
-                    <div className="col-span-1 lg:col-span-2">
+                    <div className="col-span-1 lg:col-span-2 lg:mt-16">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <Typography variant="h4" color="blue-gray" className="font-normal mb-2 text-lg">
