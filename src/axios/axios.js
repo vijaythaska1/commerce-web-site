@@ -1,5 +1,6 @@
 import axios from 'axios'
 const token = JSON.parse(localStorage.getItem("adminprofile"));
+console.log("🚀 ~ token:", token)
 
 
 export const http = axios.create({

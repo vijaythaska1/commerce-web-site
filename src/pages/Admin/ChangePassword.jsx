@@ -13,7 +13,7 @@ function ChangePassword() {
             <Typography variant="h4" color="gray" className="mb-2 mt-3 ml-4 md:text-3xl">
                 Change Password
             </Typography>
-            <div className="w-full flex flex-col md:flex-row">
+            <div className="w-full flex flex-col md:flex-row">l., 
                 <CardHeader
                     shadow={false}
                     floated={false}

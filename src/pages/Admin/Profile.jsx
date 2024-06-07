@@ -10,16 +10,18 @@ import {
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
 import { GET_USER_PROFILE } from "../../Redux/UserAuthSlice";
+import APIS from "../../axios/Index"
+
 
 function Profile() {
     const isSmallScreen = useMediaQuery({ maxWidth: 768 });
     const isTablet = useMediaQuery({ minWidth: 769, maxWidth: 1024 });
     const dispatch = useDispatch();
     const { getuser } = useSelector((state) => state.getProfile);
-    console.log(getuser, "getuserll")
+    console.log(getuser, "getuserll");
 
     useEffect(() => {
-        dispatch(GET_USER_PROFILE());
+        dispatch(APIS.profileGet());
     }, [dispatch]);
 
     return (
