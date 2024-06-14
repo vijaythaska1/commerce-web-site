@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import UserModel from '../Model/UserModel.js';
+import CryptoJS from 'crypto-js';
 dotenv.config({
     path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.developments'
 })
@@ -230,7 +231,7 @@ export default {
             return failed(res, "Invalid token");
         }
     },
-    
+
     encryptData: (data) => {
         return CryptoJS.AES.encrypt(data, secretKey).toString();
     },
