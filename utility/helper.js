@@ -229,6 +229,15 @@ export default {
             console.log(error);
             return failed(res, "Invalid token");
         }
+    },
+    
+    encryptData: (data) => {
+        return CryptoJS.AES.encrypt(data, secretKey).toString();
+    },
+
+    decryptData: (encryptedData) => {
+        const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+        return bytes.toString(CryptoJS.enc.Utf8);
     }
 
 };
