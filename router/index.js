@@ -9,10 +9,14 @@ router.post("/fileuploe", helper.uploadFile);
 
 
 router.post("/UserCreate", helper.asyncMiddleware, UserControlller.UserCreate);
-//<---------------------auth------------------------>
-router.post("/login", helper.asyncMiddleware, AuthController.login);
-router.get("/UserProfile", helper.asyncMiddleware, helper.authenticateToken, AuthController.UserProfile);
+//<---------------------auth------------------------------------------------------------>
+//<---------------------key valediction -------------------------------------------------->
+router.use(helper.asyncMiddleware);
+router.post("/login", AuthController.login);
 
-router.post("/changePassword", helper.asyncMiddleware, helper.authenticateToken, AuthController.ChangePassword);
+//<---------------------------token valediction ------------------------------------------->
+router.use( helper.authenticateToken);
+router.get("/UserProfile", AuthController.UserProfile);
+router.post("/changePassword", AuthController.ChangePassword);
 
 export default router;

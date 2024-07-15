@@ -23,6 +23,16 @@ APIServices.ProfilGet = async () => {
         toast.error(err.response.data.message);
         throw err
     }
+};
+APIServices.Passwordchange = async () => {
+    try {
+        const res = await http.post("/");
+        return res
+    } catch (error) {
+        console.log('API call failed :-', err);
+        toast.error(err.response.data.message);
+        throw error
+    }
 }
 
 

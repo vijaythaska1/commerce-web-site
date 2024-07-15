@@ -6,8 +6,39 @@ import {
     Button,
     Input
 } from "@material-tailwind/react";
+import Joi from 'joi';
+import { useDispatch } from 'react-redux'
 import changepassword from "../../assets/changepassword2.jpg"
+import helper from "../../utility/helper.js";
+import { useState } from "react";
+
 function ChangePassword() {
+    const [data, setData] = useState({});
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        const validationSchema = Joi.object({
+            email: Joi.string().email({ tlds: { allow: false } }).required(),
+            password: Joi.string().required(),
+        });
+        return helper.reactDataValidator(validationSchema, data, setErrors);;
+    };
+
+    const handlelogin = async () => {
+        try {
+            if (!validateForm()) return;
+            const res = await dispatch(APIS.authLogin(data));
+            if (res.payload.data.success === true) {
+                navegate("/Dashboard");
+                localStorage.setItem('userProfile', JSON.stringify(res.payload.data.body));
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleChange = (event) => {
+        helper.handleChange(event, setData);
+    };
     return (
         <Card className="w-full h-auto p-3 overflow-hidden">
             <Typography variant="h4" color="gray" className="mb-2 mt-3 ml-4 md:text-3xl">
