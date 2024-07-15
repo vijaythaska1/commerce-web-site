@@ -210,7 +210,7 @@ export function Navbars() {
 
   return (
     <Navbar className="rounded-none lg:pl-6">
-      <div className="relative flex items-center justify-between text-blue-gray-900">
+      <div className=" w-full relative flex items-center justify-between text-blue-gray-900">
         <span class="material-symbols-outlined"
           onClick={() => dispatch(togglesidebar())}
         >
