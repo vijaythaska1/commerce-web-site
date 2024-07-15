@@ -169,6 +169,19 @@ export default {
         }
     },
 
+    reactDataValidator: (validationSchema, data) => {
+        const validation = validationSchema.validate(data, { abortEarly: false });
+        if (validation.error) {
+            const newErrors = {};
+            error.details?.forEach((detail) => {
+                newErrors[detail.path[0]] = detail.message;
+            });
+            setErrors(newErrors);
+            return false;
+        }
+        return true;
+    },
+
     success: async (res, message = "", body = {}) => {
         return res.status(200).json({
             success: true,

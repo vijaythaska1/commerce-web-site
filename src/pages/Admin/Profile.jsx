@@ -9,7 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { useMediaQuery } from 'react-responsive';
 import { useSelector, useDispatch } from 'react-redux';
-import { GET_USER_PROFILE } from "../../Redux/UserAuthSlice";
+// import { GET_USER_PROFILE } from "../../Redux/UserAuthSlice";
 import APIS from "../../axios/Index"
 
 
@@ -56,15 +56,15 @@ function Profile() {
                 <div className={`grid ${isSmallScreen || isTablet ? "grid-cols-1" : "grid-cols-4"} gap-4 mt-8 w-full p-4`}>
                     <Card className={`w-full ${isSmallScreen || isTablet ? "" : "col-span-1"} shadow-none`}>
                         <CardHeader floated={false} className="h-48 w-48 rounded-full mx-auto md:mx-0 md:ml-4 ">
-                            <img src="https://docs.material-tailwind.com/img/team-3.jpg" alt="profile-picture" />
+                            <img src={getuser?.data?.body?.image} alt="profile-picture" />
                         </CardHeader>
 
                         <CardBody className="text-center md:text-left md:pl-4 md:ml-12 ">
                             <Typography variant="h4" color="blue-gray" className="mb-2 text-lg">
-                                Vijay Sharma
+                                {getuser?.data?.body?.firstName} {getuser?.data?.body?.lastname}
                             </Typography>
                             <Typography color="blue-gray" className="font-medium text-sm md:ml-4" textGradient>
-                                BCA III Sem
+                               {getuser?.data?.body.department}
                             </Typography>
                         </CardBody>
                         <CardFooter className="flex justify-center md:justify-start gap-4 pt-2">
@@ -106,10 +106,10 @@ function Profile() {
                     <div className={` mr-20 ${isSmallScreen || isTablet ? "mt-8" : "col-span-3 mt-14"} w-full `}>
                         <div className="flex flex-col md:flex-row mb-4">
                             <Typography variant="h4" color="blue-gray" className="font-normal mb-2 md:mb-0 w-full md:w-1/3 text-lg">
-                                Name
+                                Roll No
                             </Typography>
                             <Typography color="gray" className="font-normal w-full md:w-2/3">
-                                Vijay Sharma
+                            {getuser?.data?.body?.rollNo}
                             </Typography>
                         </div>
                         <div className="flex flex-col md:flex-row mb-4">
@@ -117,7 +117,7 @@ function Profile() {
                                 Email
                             </Typography>
                             <Typography color="gray" className="font-normal w-full md:w-2/3">
-                                VijaySharma@gmail.com
+                            {getuser?.data?.body?.email}
                             </Typography>
                         </div>
                         <div className="flex flex-col md:flex-row">
@@ -125,7 +125,7 @@ function Profile() {
                                 Phone
                             </Typography>
                             <Typography color="gray" className="font-normal w-full md:w-2/3">
-                                +91-9675570221
+                            +{getuser?.data?.body?.countryCode}-{getuser?.data?.body?.phoneNumber}
                             </Typography>
                         </div>
                     </div>

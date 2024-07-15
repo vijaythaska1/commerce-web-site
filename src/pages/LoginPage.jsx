@@ -14,7 +14,7 @@ import {
     Button,
 } from "@material-tailwind/react";
 import APIS from "../axios/Index.js";
-import { LOGIN_SUCCESS } from "../Redux/SidebarSlice.js";
+import helper from "../utility/helper.js";
 
 function Loginpage() {
     const [data, setData] = useState({});
@@ -26,18 +26,9 @@ function Loginpage() {
     const validateForm = () => {
         const validationSchema = Joi.object({
             email: Joi.string().email({ tlds: { allow: false } }).required(),
-            password: Joi.string().min(6).required("Invalid password"),
+            password: Joi.string().required(),
         });
-        const { error } = validationSchema.validate(data, { abortEarly: false });
-        if (error) {
-            const newErrors = {};
-            error.details?.forEach((detail) => {
-                newErrors[detail.path[0]] = detail.message;
-            });
-            setErrors(newErrors);
-            return false;
-        }
-        return true;
+        return helper.reactDataValidator(validationSchema, data, setErrors);
     };
 
     const handlelogin = async () => {
@@ -46,8 +37,7 @@ function Loginpage() {
             const res = await dispatch(APIS.authLogin(data));
             if (res.payload.data.success === true) {
                 navegate("/Dashboard");
-                dispatch(LOGIN_SUCCESS(res?.data))
-                localStorage.setItem('adminProfile', JSON.stringify(res.data));
+                localStorage.setItem('userProfile', JSON.stringify(res.payload.data.body));
             }
         } catch (error) {
             console.error(error);
@@ -58,12 +48,7 @@ function Loginpage() {
     }
 
     const handleChange = (event) => {
-        setData((prevalue) => {
-            return {
-                ...prevalue,
-                [event.target.name]: event.target.value
-            }
-        })
+        helper.handleChange(event, setData);
     };
 
     return (

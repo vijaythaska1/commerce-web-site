@@ -6,5 +6,4 @@ const model = {
     CmsModel
 };
 
-
 export default model

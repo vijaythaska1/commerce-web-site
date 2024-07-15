@@ -1,7 +1,5 @@
 import axios from 'axios'
-const token = JSON.parse(localStorage.getItem("adminprofile"));
-console.log("🚀 ~ token:", token)
-
+const token = JSON.parse(localStorage.getItem("userProfile"))?.token;
 
 export const http = axios.create({
     baseURL: process.env.REACT_APP_PUBLIC_URL,
