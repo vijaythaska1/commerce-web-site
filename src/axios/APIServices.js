@@ -26,7 +26,8 @@ APIServices.ProfilGet = async () => {
 };
 APIServices.Passwordchange = async () => {
     try {
-        const res = await http.post("/");
+        const res = await http.post("/changePassword");
+        console.log("🚀 ~ APIServices.Passwordchange= ~ res:", res)
         return res
     } catch (error) {
         console.log('API call failed :-', err);

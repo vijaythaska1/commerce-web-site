@@ -24,14 +24,10 @@ function ChangePassword() {
         return helper.reactDataValidator(validationSchema, data, setErrors);;
     };
 
-    const handlelogin = async () => {
+    const handleChangePassowrd = async () => {
         try {
             if (!validateForm()) return;
             const res = await dispatch(APIS.authLogin(data));
-            if (res.payload.data.success === true) {
-                navegate("/Dashboard");
-                localStorage.setItem('userProfile', JSON.stringify(res.payload.data.body));
-            }
         } catch (error) {
             console.error(error);
         }
@@ -66,6 +62,7 @@ function ChangePassword() {
                                 type="password"
                                 placeholder="Enter current password"
                                 className="w-full !border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                onChange={handleChange}
                                 labelProps={{
                                     className: "hidden",
                                 }}
@@ -82,6 +79,7 @@ function ChangePassword() {
                             <Input
                                 type="password"
                                 className="w-full !border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                onChange={handleChange}
                                 gggglabelProps={{
                                     className: "hidden",
                                 }}
@@ -98,13 +96,14 @@ function ChangePassword() {
                                 type="password"
                                 placeholder="Confirm new password"
                                 className="w-full !border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                                onChange={handleChange}
                                 labelProps={{
                                     className: "hidden",
                                 }}
                                 containerProps={{ className: "min-w-[100px]" }}
                             />
                             <div className="w-full flex justify-center  md:justify-end  mt-10">
-                                <Button loading={true}>Submit</Button>
+                                <Button onSubmit={handleChangePassowrd} loading={true}>Submit</Button>
                             </div>
                         </div>
 

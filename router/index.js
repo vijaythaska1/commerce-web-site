@@ -15,7 +15,7 @@ router.use(helper.asyncMiddleware);
 router.post("/login", AuthController.login);
 
 //<---------------------------token valediction ------------------------------------------->
-router.use( helper.authenticateToken);
+router.use(helper.authenticateToken);
 router.get("/UserProfile", AuthController.UserProfile);
 router.post("/changePassword", AuthController.ChangePassword);
 

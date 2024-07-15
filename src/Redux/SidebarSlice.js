@@ -16,7 +16,6 @@ export const SidebarSlice = createSlice({
       return state
     },
   },
-
 });
 
 
