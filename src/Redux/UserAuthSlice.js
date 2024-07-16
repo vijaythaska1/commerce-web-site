@@ -3,50 +3,51 @@ import APIS from '../axios/Index.js';
 
 const initialState = {
     getuser: null,
-    isLogin: false,
-    authUser: {}
+    isAuthenticated: false,
+    error: null,
 };
 
-const GetProfile = createSlice({
+const profileSlice = createSlice({
     name: 'profile',
     initialState,
     reducers: {
-        GET_USER_PROFILE: (state, action) => {
-            console.log(action.payload, '========12');
-            return {
-                ...state,
-                getuser: action.payload
-            };
+        clearError: (state) => {
+            state.error = null;
         },
-        LOGIN_SUCCESS: (state, action) => {
-            console.log(action.payload, '========13');
-            return {
-                ...state,
-                authUser: action.payload
-            };
+        logout: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(APIS?.profileGet.fulfilled, (state, action) => {
+        builder
+        .addCase(APIS?.profileGet.fulfilled, (state, action) => {
             state.getuser = action.payload;
-            state.isLogin = true;
-        });
+            state.isAuthenticated = true;
+            state.error = null;
+        })
 
-        builder.addCase(APIS?.profileGet.rejected, (state, action) => {
-            console.log("Failed =======>", action.payload);
-        });
+        .addCase(APIS?.profileGet.rejected, (state, action) => {
+            state.error = action.payload || 'Failed to fetch profile';
+        })
 
-        builder.addCase(APIS?.authLogin.fulfilled, (state, action) => {
-            state.authUser = action.payload;
-            state.isLogin = true;
-        });
+        .addCase(APIS?.authLogin.fulfilled, (state, action) => {
+            state.isAuthenticated = true;
+            state.error = null;
+        })
 
-        builder.addCase(APIS?.authLogin.rejected, (state, action) => {
-            console.log("Failed =======>", action.payload);
+        .addCase(APIS?.authLogin.rejected, (state, action) => {
+            state.error = action.payload || 'Login failed';
+        })
+
+        .addCase(APIS.changePassword.fulfilled, (state, action) => {
+            state.error = null;
+        })
+        .addCase(APIS.changePassword.rejected, (state, action) => {
+            state.error = action.payload || 'Failed to change password';
         });
     }
 });
+export const { clearError, logout } = profileSlice.actions;
 
-export const { GET_USER_PROFILE, LOGIN_SUCCESS } = GetProfile.actions;
-
-export default GetProfile.reducer;
+export default profileSlice.reducer;

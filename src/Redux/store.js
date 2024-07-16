@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import SidebarReducer from "./SidebarSlice.js"
-import UserAuth from "./UserAuthSlice.js"
+import userAuthReducer from "./UserAuthSlice.js"
 export const store = configureStore({
   reducer: {
-    getProfile: UserAuth,
+    getProfile: userAuthReducer,
     sidebar: SidebarReducer
   },
 })

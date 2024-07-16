@@ -1,10 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import APIS from '../axios/Index.js';
 const initialState = {
   value: 0,
-  data: [],
-  isLogin: false,
-  authUser: {}
 }
 
 export const SidebarSlice = createSlice({
@@ -19,6 +15,6 @@ export const SidebarSlice = createSlice({
 });
 
 
-export const { togglesidebar, LOGIN_SUCCESS } = SidebarSlice.actions
+export const { togglesidebar } = SidebarSlice.actions
 
 export default SidebarSlice.reducer
