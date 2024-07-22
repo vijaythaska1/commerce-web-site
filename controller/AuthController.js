@@ -43,8 +43,10 @@ export default {
         if (!match) {
             return helper.failed(res, "Invalid Password");
         }
-        const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: '24h' });
-        helper.success(res, "Login Successful", { token });
+        const token = jwt.sign({ id: user._id }, SECRET_KEY,);
+        user.authToken = token
+        await user.save()
+        helper.success(res, "Login Successful", { authToken: user.authToken });
     }),
 
     UserProfile: helper.TryCatchHanddler(async (req, res) => {
@@ -52,4 +54,9 @@ export default {
         const user = await Model.UserModel.findById(id);
         helper.success(res, "Profile Retrieved Successfully", user);
     }),
+    logout: helper.TryCatchHanddler(async (req, res) => {
+        const { id } = req.user;
+        const data = await Model.UserModel.findByIdAndUpdate(id, { authToken: "" }, { new: true });
+        helper.success(res, "User Logout Successfully",);
+    })
 };

@@ -4,6 +4,7 @@ import userAuthReducer from "./UserAuthSlice.js"
 export const store = configureStore({
   reducer: {
     getProfile: userAuthReducer,
+    GetCms:userAuthReducer,
     sidebar: SidebarReducer
   },
 })

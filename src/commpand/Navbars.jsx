@@ -22,10 +22,10 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/solid";
 import { useMediaQuery } from 'react-responsive';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { togglesidebar } from "../Redux/SidebarSlice";
-
+import APIS from "../axios/Index";
 const profileMenuItems = [
   {
     label: "My Profile",
@@ -48,13 +48,26 @@ const profileMenuItems = [
   {
     label: "Sign Out",
     icon: PowerIcon,
-    to: "/"
+    to: "/",
   },
 ];
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const closeMenu = () => setIsMenuOpen(false);
+  const navegate = useNavigate()
+  const dispatch = useDispatch()
+  const handlelogout = async () => {
+    try {
+      const res = await dispatch(APIS.logout());
+      console.log("🚀 ~ handlelogout ~ res:", res)
+      if (res.payload.data.success === true) {
+        navegate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
@@ -83,8 +96,9 @@ function ProfileMenu() {
           return (
             <Link to={to}>
               <MenuItem
+                onClick={isLastItem ? handlelogout : closeMenu}
                 key={label}
-                onClick={closeMenu}
+                // onClick={closeMenu}
                 className={`flex items-center gap-2 rounded ${isLastItem
                   ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
                   : ""

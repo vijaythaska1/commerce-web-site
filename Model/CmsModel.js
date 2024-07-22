@@ -1,19 +1,18 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const CmsSchema = mongoose.Schema({
+const CmsSchema = new mongoose.Schema({
     type: {
-        type: String,
-        require,
-    },
-    tittel: {
-        trye: String,
-        require,
+        type: Number,
+        default: 0 
+    },  // 0 Abouts, 1 privacy, 0 terms and conditions
+    title: {
+        type: String, 
+        default: ""
     },
     content: {
         type: String,
-        require,
+        default: ""
     },
+}, { timestamps: true }); 
 
-}, { timeStamp: true })
-
-export default mongoose.mode("Cms", CmsSchema)
+export default mongoose.model("Cms", CmsSchema); 

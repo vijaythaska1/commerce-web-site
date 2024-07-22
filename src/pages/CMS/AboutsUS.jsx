@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Card, Typography, Input, Button } from "@material-tailwind/react";
+import { Card, Typography, Button } from "@material-tailwind/react";
+import { useDispatch, useSelector } from 'react-redux';
+import APIS from '../../axios/Index';
 
 
 function AboutsUS() {
+    const dispatch = useDispatch()
+    const getcms = useSelector((state) => state.GetCms);
+
+    useEffect(() => {
+        dispatch(APIS.cmsget(1));
+    }, [dispatch]);
     return (
         <Card className='p-3 w-full'>
 

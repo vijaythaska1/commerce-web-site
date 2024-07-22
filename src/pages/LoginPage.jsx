@@ -34,9 +34,9 @@ function Loginpage() {
     const handlelogin = async () => {
         try {
             if (!validateForm()) return;
-            const res =  await dispatch(APIS.authLogin(data));
+            const res = await dispatch(APIS.authLogin(data));
             if (res.payload.data.success === true) {
-                 navegate("/Dashboard");
+                navegate("/Dashboard");
                 localStorage.setItem('userProfile', JSON.stringify(res.payload.data.body));
             }
         } catch (error) {

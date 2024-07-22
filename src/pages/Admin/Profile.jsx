@@ -16,10 +16,10 @@ function Profile() {
     const isSmallScreen = useMediaQuery({ maxWidth: 768 });
     const isTablet = useMediaQuery({ minWidth: 769, maxWidth: 1024 });
     const dispatch = useDispatch();
-    const { getuser } = useSelector((state) => state.getProfile);
-
+    const getuser = useSelector((state) => state.getProfile);
+  
     useEffect(() => {
-        dispatch(APIS.profileGet());
+      dispatch(APIS.profileGet());
     }, [dispatch]);
 
     return (
@@ -54,15 +54,15 @@ function Profile() {
                 <div className={`grid ${isSmallScreen || isTablet ? "grid-cols-1" : "grid-cols-4"} gap-4 mt-8 w-full p-4`}>
                     <Card className={`w-full ${isSmallScreen || isTablet ? "" : "col-span-1"} shadow-none`}>
                         <CardHeader floated={false} className="h-48 w-48 rounded-full mx-auto md:mx-0 md:ml-4 ">
-                            <img src={getuser?.data?.body?.image} alt="profile-picture" />
+                            <img src={getuser?.getuser?.data?.body?.image} alt="profile-picture" />
                         </CardHeader>
 
                         <CardBody className="text-center md:text-left md:pl-4 md:ml-12 ">
                             <Typography variant="h4" color="blue-gray" className="mb-2 text-lg">
-                                {getuser?.data?.body?.firstName} {getuser?.data?.body?.lastname}
+                                {getuser?.getuser?.data?.body?.firstName} {getuser?.data?.body?.lastname}
                             </Typography>
                             <Typography color="blue-gray" className="font-medium text-sm md:ml-4" textGradient>
-                               {getuser?.data?.body.department}
+                                {getuser?.getuser?.data?.body.department}
                             </Typography>
                         </CardBody>
                         <CardFooter className="flex justify-center md:justify-start gap-4 pt-2">
@@ -107,7 +107,7 @@ function Profile() {
                                 Roll No
                             </Typography>
                             <Typography color="gray" className="font-normal w-full md:w-2/3">
-                            {getuser?.data?.body?.rollNo}
+                                {getuser?.getuser?.data?.body?.rollNo}
                             </Typography>
                         </div>
                         <div className="flex flex-col md:flex-row mb-4">
@@ -115,7 +115,7 @@ function Profile() {
                                 Email
                             </Typography>
                             <Typography color="gray" className="font-normal w-full md:w-2/3">
-                            {getuser?.data?.body?.email}
+                                {getuser?.getuser?.data?.body?.email}
                             </Typography>
                         </div>
                         <div className="flex flex-col md:flex-row">
@@ -123,7 +123,7 @@ function Profile() {
                                 Phone
                             </Typography>
                             <Typography color="gray" className="font-normal w-full md:w-2/3">
-                            +{getuser?.data?.body?.countryCode}-{getuser?.data?.body?.phoneNumber}
+                                +{getuser?.getuser?.data?.body?.countryCode}-{getuser?.getuser?.data?.body?.phoneNumber}
                             </Typography>
                         </div>
                     </div>
