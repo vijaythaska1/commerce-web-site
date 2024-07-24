@@ -24,9 +24,10 @@ APIServices.ProfilGet = async () => {
         throw err
     }
 };
+
 APIServices.Passwordchange = async (body) => {
     try {
-        const res = await http.post("/changePassword",body);
+        const res = await http.post("/changePassword", body);
         toast.success(res.data.message);
         return res
     } catch (err) {
@@ -35,6 +36,7 @@ APIServices.Passwordchange = async (body) => {
         throw err
     }
 };
+
 APIServices.logout = async (body) => {
     try {
         const res = await http.post("/logout");
@@ -48,9 +50,23 @@ APIServices.logout = async (body) => {
     }
 
 };
+
 APIServices.GetCms = async (body) => {
     try {
         const res = await http.get(`/cmsget?type=${body}`);
+        return res
+    } catch (err) {
+        console.log('API call failed :-', err);
+        toast.error(err.response.data.message);
+        throw err
+    }
+
+};
+
+APIServices.UpdateCms = async (body) => {
+    try {
+        const res = await http.post(`/CmsUpdate?type=${body}`);
+        toast.success(res.data.message);
         return res
     } catch (err) {
         console.log('API call failed :-', err);

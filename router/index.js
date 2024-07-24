@@ -24,7 +24,7 @@ router.post("/changePassword", AuthController.ChangePassword);
 //<------------------------------Cms------------------------------------------------------>
 router.post("/cmscreate", CmsController.cmsCreate)
 router.get("/cmsget", CmsController.CmsGet)
-router.get("/CmsUpdate", CmsController.CmsUpdate)
+router.post("/CmsUpdate", CmsController.CmsUpdate)
 
 
 
