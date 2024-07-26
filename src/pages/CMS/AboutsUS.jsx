@@ -14,16 +14,10 @@ function AboutsUS() {
         dispatch(APIS.cmsget(0));
     }, [dispatch]);
 
-    useEffect(() => {
-        if (getcms?.GetCms?.data?.body?.content) {
-            setData({ content: getcms.GetCms.data.body.content });
-        }
-    }, [getcms]);
 
     const hendleUpdate = async () => {
         try {
-            const res = await dispatch(APIS.UpdateCms(0, data));
-            console.log("🚀 ~ hendleUpdate ~ res:", res)
+            await dispatch(APIS.UpdateCms(0, { content: data.content }));
         } catch (error) {
             console.log(error);
         }
