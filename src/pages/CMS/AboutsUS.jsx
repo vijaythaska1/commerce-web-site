@@ -7,7 +7,8 @@ import APIS from '../../axios/Index';
 
 
 function AboutsUS() {
-    const [data, setData] = useState({ content: '' })
+
+    const [data, setData] = useState({ content: '' });
     const dispatch = useDispatch()
     const getcms = useSelector((state) => state.GetCms);
     useEffect(() => {
@@ -15,9 +16,34 @@ function AboutsUS() {
     }, [dispatch]);
 
 
+
+    const token = JSON.parse(localStorage.getItem("userProfile"))?.authToken;
+
+    const test = async () => {
+        const requestKey = {
+            content: data.content
+        };
+        const requestMethods = {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+                Authorization: `Bearer ${token}`,
+                SECRET_KEY: process.env.REACT_APP_SECRET_KEY,
+                PUBLISH_KEY: process.env.REACT_APP_PUBLISH_KEY,
+            },
+            body: JSON.stringify(requestKey)
+        };
+        const res = await fetch(`http://127.0.0.1:7300/CmsUpdate?type=${0}`, requestMethods);
+        const data = await res.json();
+        console.log("data>>>>>>>>>", data);
+    }
+
+
     const hendleUpdate = async () => {
+        const test = { content: data.content, type: 0 }
         try {
-            await dispatch(APIS.UpdateCms(0, { content: data.content }));
+            await dispatch(APIS.UpdateCms({content: data.content, type: 0 }));
         } catch (error) {
             console.log(error);
         }
@@ -46,6 +72,7 @@ function AboutsUS() {
 
             <div className=" flex justify-end mt-10">
                 <Button onClick={hendleUpdate} >Submit</Button>
+                <Button onClick={() => test()} >test</Button>
             </div>
 
         </Card>
