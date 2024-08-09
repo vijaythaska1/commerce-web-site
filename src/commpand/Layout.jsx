@@ -2,11 +2,8 @@ import { Sidebar } from './Sidebar.jsx'
 import { Navbars } from './Navbars.jsx'
 import { Footer } from './Footer.jsx';
 import { Outlet } from "react-router-dom";
-import { useSelector } from 'react-redux';
 
 function Layout() {
-    useSelector((state) => state)
-
     return (
         <div className='w-full h-screen flex bg-gray-100'>
             <div className='min-h-full'>
@@ -21,7 +18,6 @@ function Layout() {
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }

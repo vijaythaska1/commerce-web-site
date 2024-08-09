@@ -63,9 +63,10 @@ APIServices.GetCms = async (body) => {
 
 };
 
-APIServices.UpdateCms = async (body,data) => {
+APIServices.UpdateCms = async (body) => {
+    const { content, type } = body;
     try {
-        const res = await http.post(`/CmsUpdate?type=${body}`,{data});
+        const res = await http.post(`/CmsUpdate?type=${type}`, { content });
         toast.success(res.data.message);
         return res
     } catch (err) {

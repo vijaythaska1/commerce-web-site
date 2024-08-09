@@ -55,12 +55,11 @@ const profileMenuItems = [
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const closeMenu = () => setIsMenuOpen(false);
-  const navegate = useNavigate()
-  const dispatch = useDispatch()
+  const navegate = useNavigate();
+  const dispatch = useDispatch();
   const handlelogout = async () => {
     try {
       const res = await dispatch(APIS.logout());
-      console.log("🚀 ~ handlelogout ~ res:", res)
       if (res.payload.data.success === true) {
         navegate("/");
       }
@@ -207,9 +206,7 @@ export function Navbars() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
   const isSmallScreen = useMediaQuery({ maxWidth: 960 });
-
   const dispatch = useDispatch(togglesidebar);
-  const value = useSelector(store => store).sidebar.value;
 
   React.useEffect(() => {
     setIsNavOpen(isSmallScreen);

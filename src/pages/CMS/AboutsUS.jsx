@@ -7,7 +7,8 @@ import APIS from '../../axios/Index';
 
 
 function AboutsUS() {
-    const [data, setData] = useState("")
+    const [data, setData] = useState({ content: '' })
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch()
     const getcms = useSelector((state) => state.GetCms);
     useEffect(() => {
@@ -16,16 +17,17 @@ function AboutsUS() {
 
 
     const hendleUpdate = async () => {
+        setLoading(true);
         try {
-            const dta = 
-            await dispatch(APIS.UpdateCms(0 ,  {content: data}));
+            await dispatch(APIS.UpdateCms({ content: data, type: 0 }));
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     }
     const handleEditorChange = (event, editor) => {
-        const   content = editor.getData();
-        console.log("🚀 ~ handleEditorChange ~ content:", content)
+        const content = editor.getData();
         setData(content);
 
     }
@@ -45,7 +47,7 @@ function AboutsUS() {
             />
 
             <div className=" flex justify-end mt-10">
-                <Button onClick={hendleUpdate} >Submit</Button>
+                <Button onClick={hendleUpdate} loading={loading}> Submit</Button>
             </div>
 
         </Card>

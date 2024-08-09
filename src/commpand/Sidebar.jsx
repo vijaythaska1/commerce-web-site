@@ -19,7 +19,8 @@ import {
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/sidebarimage.png"
 import { Link } from "react-router-dom";
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleCms } from "../Redux/SidebarSlice.js";
 
 
 export function Sidebar() {
@@ -29,6 +30,7 @@ export function Sidebar() {
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
+  const dispatch = useDispatch(toggleCms);
 
   return (
     <>
@@ -80,7 +82,6 @@ export function Sidebar() {
               </ListItem>
             </Accordion>
 
-
             <Accordion
               open={open === 1}
               className={`${sidebar === 0
@@ -91,6 +92,7 @@ export function Sidebar() {
                 ? <ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4`} />
                 : ""}
             >
+
               <ListItem className="p-0" selected={open === 1}>
                 <AccordionHeader
                   onClick={() => handleOpen(1)}
@@ -129,7 +131,7 @@ export function Sidebar() {
                     </ListItem>
                   </Link>
 
-                  <Link to={"/AboutsUS"}>
+                  <Link onClick={() => dispatch(toggleCms(1))} to={"/AboutsUS"}>
                     <ListItem>
                       <ListItemPrefix>
                         <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />

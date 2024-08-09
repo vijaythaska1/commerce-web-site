@@ -14,7 +14,18 @@ export const SidebarSlice = createSlice({
   },
 });
 
+export const Sidebarcms = createSlice({
+  name: 'cms',
+  initialState,
+  reducers: {
+    toggleCms: (state, action) => {
+      state?.value === 0 ? state.value = 1 : state.value = 0;
+      return state
+    },
+  },
+});
 
-export const { togglesidebar } = SidebarSlice.actions
+
+export const { togglesidebar,toggleCms } = SidebarSlice.actions
 
 export default SidebarSlice.reducer
