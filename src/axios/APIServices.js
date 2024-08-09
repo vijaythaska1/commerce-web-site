@@ -51,9 +51,9 @@ APIServices.logout = async (body) => {
 
 };
 
-APIServices.GetCms = async (body, data) => {
+APIServices.GetCms = async (body) => {
     try {
-        const res = await http.get(`/cmsget?type=${body}`, data);
+        const res = await http.get(`/cmsget?type=${body}`);
         return res
     } catch (err) {
         console.log('API call failed :-', err);
@@ -63,9 +63,9 @@ APIServices.GetCms = async (body, data) => {
 
 };
 
-APIServices.UpdateCms = async (body) => {
+APIServices.UpdateCms = async (body,data) => {
     try {
-        const res = await http.post(`/CmsUpdate?type=${body}`);
+        const res = await http.post(`/CmsUpdate?type=${body}`,{data});
         toast.success(res.data.message);
         return res
     } catch (err) {

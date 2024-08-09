@@ -7,7 +7,7 @@ import APIS from '../../axios/Index';
 
 
 function AboutsUS() {
-    const [data, setData] = useState({ content: '' })
+    const [data, setData] = useState("")
     const dispatch = useDispatch()
     const getcms = useSelector((state) => state.GetCms);
     useEffect(() => {
@@ -17,17 +17,17 @@ function AboutsUS() {
 
     const hendleUpdate = async () => {
         try {
-            await dispatch(APIS.UpdateCms(0, { content: data.content }));
+            const dta = 
+            await dispatch(APIS.UpdateCms(0 ,  {content: data}));
         } catch (error) {
             console.log(error);
         }
     }
     const handleEditorChange = (event, editor) => {
-        const content = editor.getData();
-        setData((prevData) => ({
-            ...prevData,
-            content,
-        }));
+        const   content = editor.getData();
+        console.log("🚀 ~ handleEditorChange ~ content:", content)
+        setData(content);
+
     }
 
     return (

@@ -72,9 +72,6 @@ const profileSlice = createSlice({
             .addCase(APIS?.UpdateCms.fulfilled, (state, action) => {
                 state.isAuthenticated = true;
                 state.error = null;
-                // if (state.GetCms && state.GetCms.data) {
-                //     state.GetCms.data.body = action.payload.data.body;
-                // }
             })
 
             .addCase(APIS?.UpdateCms.rejected, (state, action) => {

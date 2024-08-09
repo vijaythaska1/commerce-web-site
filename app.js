@@ -12,10 +12,10 @@ import { Server } from "socket.io";
 import { createServer } from 'node:http';
 dotenv.config({
     path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development'
-})
+});
 
 const PORT = process.env.PORTs
-const catchServerErrors = helper.catchServerError
+const catchServerErrors = helper.catchServerError;
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -34,4 +34,6 @@ app.use(catchServerErrors);
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+
 
